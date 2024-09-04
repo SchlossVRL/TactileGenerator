@@ -286,11 +286,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TilePrefab: {fileID: 5997940118473086424, guid: a63266da3fbbb495c9237e2b60aeb0f6, type: 3}
   TextureDir: brodatz
-  TestTexture: {fileID: 2800000, guid: 4f6558d82ac994f9889f24e3fd1a5896, type: 3}
+  TestTexture: {fileID: 2800000, guid: c847f96221b354960900da5b96cde886, type: 3}
   WorldWidth: 0.0508
   WorldHeight: 0.0508
   BaseSize: 0.005
-  TileSize: 0.003
+  TileSize: 0.002
+  Invert: 0
 --- !u!1 &2016077412
 GameObject:
   m_ObjectHideFlags: 0
