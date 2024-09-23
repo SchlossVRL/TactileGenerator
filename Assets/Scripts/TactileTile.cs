@@ -14,13 +14,22 @@ public class TactileTile : MonoBehaviour
         
     }
 
-    public void GenerateTile(Texture2D tex, float worldWidth, float worldHeight, float baseSize, float tileSize, bool invert)
+    public void GenerateTile(Texture2D tex, float worldWidth, float worldHeight, float baseSize, float tileSize, bool invert, bool scaleQuarter=false)
     {
-        int BASE_VERT_OFFSET = tex.width * tex.height;// * 2;
+        int heightPixels = tex.height;
+        int widthPixels = tex.width;
+
+        if(scaleQuarter)
+        {
+            heightPixels = heightPixels / 4;
+            widthPixels = widthPixels / 4;
+        }
+
+        int BASE_VERT_OFFSET = widthPixels * heightPixels;// * 2;
         //int BASE_INDEX_OFFSET = tex.width * 12 + tex.height * 12;
 
-        int numVerts = tex.width * tex.height * 2;//+ tex.width * 2 + tex.height * 2;
-        int numTrianglesIndices = ((tex.width) * (tex.height)) * 12 + tex.width * 12 + tex.height * 12;
+        int numVerts = widthPixels * heightPixels * 2;//+ tex.width * 2 + tex.height * 2;
+        int numTrianglesIndices = ((widthPixels) * (heightPixels)) * 12 + widthPixels * 12 + heightPixels * 12;
         //Debug.Log(numTrianglesIndices);
 
         int[] indices = new int[numTrianglesIndices];
@@ -37,75 +46,27 @@ public class TactileTile : MonoBehaviour
         int vertIndex = 0;
         int indexIdx = 0;
 
-        /*for(int j = 0; j < tex.width; ++j)
+		for(int j = 0; j < heightPixels; j++)
         {
-            Color c = tex.GetPixel(j, 0);
-            
-            currVert.x = -halfWidth + (((float)j / ((float)tex.width-1f)) * worldWidth);
-            currVert.y = 0f;
-            currVert.z = -halfHeight;
-            verts[vertIndex] = currVert;
-            colors[vertIndex] = c;
-            vertIndex++;
-        }
-
-        for(int j = 0; j < tex.width; ++j)
-        {
-            Color c = tex.GetPixel(j, tex.height-1);
-
-            currVert.x = -halfWidth + (((float)j / ((float)tex.width-1f)) * worldWidth);
-            currVert.y = 0f;
-            currVert.z = halfHeight;
-            verts[vertIndex] = currVert;
-            colors[vertIndex] = c;
-            vertIndex++;
-        }
-
-        for(int j = 0; j < tex.height; ++j)
-        {
-            Color c = tex.GetPixel(0, j);
-
-            currVert.x = -halfWidth;
-            currVert.y = 0f;
-            currVert.z = -halfHeight + (((float)j / ((float)tex.height-1f)) * worldHeight);
-            verts[vertIndex] = currVert;
-            colors[vertIndex] = c;
-            vertIndex++;
-        }
-
-        for(int j = 0; j < tex.height; ++j)
-        {
-            Color c = tex.GetPixel(tex.width-1, j);
-
-            currVert.x = halfWidth;
-            currVert.y = 0f;
-            currVert.z = -halfHeight + (((float)j / ((float)tex.height-1f)) * worldHeight);
-            verts[vertIndex] = currVert;
-            colors[vertIndex] = c;
-            vertIndex++;
-        }*/
-
-		for(int j = 0; j < tex.height; j++)
-        {
-            for(int i = 0; i < tex.width; i++)
+            for(int i = 0; i < widthPixels; i++)
             {
 				Color c = tex.GetPixel(i, j);
 				currVert.y = 0f; 
-                currVert.x = -halfWidth + (((float)i / ((float)tex.width-1f)) * worldWidth);
-                currVert.z = -halfHeight + (((float)j / ((float)tex.height-1f)) * worldHeight);
+                currVert.x = -halfWidth + (((float)i / ((float)widthPixels-1f)) * worldWidth);
+                currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
                 verts[vertIndex] = currVert;
                 //normals[vertIndex] = Vector3.up;
                 colors[vertIndex] = c;
 
-                if(j < tex.height-1 && i < tex.width-1)
+                if(j < heightPixels-1 && i < widthPixels-1)
                 {
                     //Debug.Log(j + " " + i + " " + indexIdx);
                     indices[indexIdx] = vertIndex;
                     indices[indexIdx+1] = vertIndex+1;
-                    indices[indexIdx+2] = vertIndex+tex.width;
+                    indices[indexIdx+2] = vertIndex+widthPixels;
                     indices[indexIdx+3] = vertIndex+1;
-                    indices[indexIdx+4] = vertIndex+tex.width+1;
-                    indices[indexIdx+5] = vertIndex+tex.width;
+                    indices[indexIdx+4] = vertIndex+widthPixels+1;
+                    indices[indexIdx+5] = vertIndex+widthPixels;
                 }
                 vertIndex++;
                 indexIdx += 6;
@@ -113,9 +74,9 @@ public class TactileTile : MonoBehaviour
 			}	
 		}
 		
-        for(int j = 0; j < tex.height; j++)
+        for(int j = 0; j < heightPixels; j++)
         {
-            for(int i = 0; i < tex.width; i++)
+            for(int i = 0; i < widthPixels; i++)
             {
                 Color c = tex.GetPixel(i, j);
                 float v = 0f;
@@ -129,21 +90,21 @@ public class TactileTile : MonoBehaviour
                 }
 
                 currVert.y = (baseSize) + tileSize * v;  //sample y value from the texutre...
-                currVert.x = -halfWidth + (((float)i / ((float)tex.width-1f)) * worldWidth);
-                currVert.z = -halfHeight + (((float)j / ((float)tex.height-1f)) * worldHeight);
+                currVert.x = -halfWidth + (((float)i / ((float)widthPixels-1f)) * worldWidth);
+                currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
                 verts[vertIndex] = currVert;
                 //normals[vertIndex] = Vector3.up;
                 colors[vertIndex] = c;
 
-                if(j < tex.height-1 && i < tex.width-1)
+                if(j < heightPixels-1 && i < widthPixels-1)
                 {
                     //Debug.Log(j + " " + i + " " + indexIdx);
                     indices[indexIdx] = vertIndex;
                     indices[indexIdx+1] = vertIndex+1;
-                    indices[indexIdx+2] = vertIndex+tex.width;
+                    indices[indexIdx+2] = vertIndex+widthPixels;
                     indices[indexIdx+3] = vertIndex+1;
-                    indices[indexIdx+4] = vertIndex+tex.width+1;
-                    indices[indexIdx+5] = vertIndex+tex.width;
+                    indices[indexIdx+4] = vertIndex+widthPixels+1;
+                    indices[indexIdx+5] = vertIndex+widthPixels;
                 }
                 vertIndex++;
                 indexIdx += 6;
@@ -152,7 +113,7 @@ public class TactileTile : MonoBehaviour
 
         //now neede to handle edges...
         //top
-        for(int j = 0; j < tex.width-1; j++)
+        for(int j = 0; j < widthPixels-1; j++)
         {
             indices[indexIdx] = j;
             indices[indexIdx+1] = BASE_VERT_OFFSET + j;
@@ -164,38 +125,38 @@ public class TactileTile : MonoBehaviour
         }
         
         //bottom
-        for(int j = 0; j < tex.width-1; j++)
+        for(int j = 0; j < widthPixels-1; j++)
         {
-            indices[indexIdx] = tex.width * (tex.height-1) + j;
-            indices[indexIdx+1] = BASE_VERT_OFFSET + tex.width * (tex.height-1) + j;
-            indices[indexIdx+2] = tex.width * (tex.height-1) + j + 1;
-            indices[indexIdx+3] = tex.width * (tex.height-1) + j + 1;
-            indices[indexIdx+4] = BASE_VERT_OFFSET + tex.width * (tex.height-1) + j + 1;
-            indices[indexIdx+5] = BASE_VERT_OFFSET + tex.width * (tex.height-1) + j;
+            indices[indexIdx] = widthPixels * (heightPixels-1) + j;
+            indices[indexIdx+1] = BASE_VERT_OFFSET + widthPixels * (heightPixels-1) + j;
+            indices[indexIdx+2] = widthPixels * (heightPixels-1) + j + 1;
+            indices[indexIdx+3] = widthPixels * (heightPixels-1) + j + 1;
+            indices[indexIdx+4] = BASE_VERT_OFFSET + widthPixels * (heightPixels-1) + j + 1;
+            indices[indexIdx+5] = BASE_VERT_OFFSET + widthPixels * (heightPixels-1) + j;
             indexIdx += 6;
         }
 
         //left
-        for(int j = 0; j < tex.height-1; j++)
+        for(int j = 0; j < heightPixels-1; j++)
         {
-            indices[indexIdx] = tex.width * j;
-            indices[indexIdx+1] = BASE_VERT_OFFSET + tex.width * j;
-            indices[indexIdx+2] = tex.width * (j+1);
-            indices[indexIdx+3] = tex.width * (j+1);
-            indices[indexIdx+4] = BASE_VERT_OFFSET + (tex.width * (j+1));
-            indices[indexIdx+5] = BASE_VERT_OFFSET + tex.width * j;
+            indices[indexIdx] = widthPixels * j;
+            indices[indexIdx+1] = BASE_VERT_OFFSET + widthPixels * j;
+            indices[indexIdx+2] = widthPixels * (j+1);
+            indices[indexIdx+3] = widthPixels * (j+1);
+            indices[indexIdx+4] = BASE_VERT_OFFSET + (widthPixels * (j+1));
+            indices[indexIdx+5] = BASE_VERT_OFFSET + widthPixels * j;
             indexIdx += 6;
         }
 
         //right
-        for(int j = 0; j < tex.height-1; j++)
+        for(int j = 0; j < heightPixels-1; j++)
         {
-            indices[indexIdx] = tex.width * j + (tex.width-1);
-            indices[indexIdx+1] = BASE_VERT_OFFSET + tex.width * j + (tex.width-1);
-            indices[indexIdx+2] = tex.width * (j+1) + (tex.width-1);
-            indices[indexIdx+3] = tex.width * (j+1) + (tex.width-1);
-            indices[indexIdx+4] = BASE_VERT_OFFSET + tex.width * (j+1) + (tex.width-1);
-            indices[indexIdx+5] = BASE_VERT_OFFSET + tex.width * j + (tex.width-1);
+            indices[indexIdx] = widthPixels * j + (widthPixels-1);
+            indices[indexIdx+1] = BASE_VERT_OFFSET + widthPixels * j + (widthPixels-1);
+            indices[indexIdx+2] = widthPixels * (j+1) + (widthPixels-1);
+            indices[indexIdx+3] = widthPixels * (j+1) + (widthPixels-1);
+            indices[indexIdx+4] = BASE_VERT_OFFSET + widthPixels * (j+1) + (widthPixels-1);
+            indices[indexIdx+5] = BASE_VERT_OFFSET + widthPixels * j + (widthPixels-1);
             indexIdx += 6;
         }
 

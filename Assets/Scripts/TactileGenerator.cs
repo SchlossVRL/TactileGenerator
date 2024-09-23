@@ -28,6 +28,9 @@ public class TactileGenerator : MonoBehaviour
     [SerializeField]
     bool Invert;
 
+    [SerializeField]
+    bool ScaleQuarter;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -43,7 +46,7 @@ public class TactileGenerator : MonoBehaviour
 
             TactileTile ipc = ip.GetComponent<TactileTile>();
             
-            ipc.GenerateTile(TestTexture, WorldWidth, WorldHeight, BaseSize, TileSize, Invert);
+            ipc.GenerateTile(TestTexture, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter);
         }
         else
         {
