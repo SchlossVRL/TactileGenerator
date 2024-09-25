@@ -21,8 +21,8 @@ public class TactileTile : MonoBehaviour
 
         if(scaleQuarter)
         {
-            heightPixels = heightPixels / 4;
-            widthPixels = widthPixels / 4;
+            heightPixels = heightPixels / 2;
+            widthPixels = widthPixels / 2;
         }
 
         int BASE_VERT_OFFSET = widthPixels * heightPixels;// * 2;
