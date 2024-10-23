@@ -31,6 +31,24 @@ public class TactileGenerator : MonoBehaviour
     [SerializeField]
     bool ScaleQuarter;
 
+    [SerializeField]
+    bool WriteMM;
+
+    [SerializeField]
+    bool CastingOption;
+
+    [SerializeField]
+    bool CastingInvert;
+
+    [SerializeField]
+    float CastingBorderSize;
+
+    [SerializeField]
+    bool Smooth;
+
+    [SerializeField]
+    int SmoothWindow;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -46,7 +64,7 @@ public class TactileGenerator : MonoBehaviour
 
             TactileTile ipc = ip.GetComponent<TactileTile>();
             
-            ipc.GenerateTile(TestTexture, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter);
+            ipc.GenerateTile(TestTexture, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter, WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow);
         }
         else
         {
@@ -74,7 +92,7 @@ public class TactileGenerator : MonoBehaviour
 
                     TactileTile ipc = ip.GetComponent<TactileTile>();
                     
-                    ipc.GenerateTile(colorTex, WorldWidth, WorldHeight, BaseSize, TileSize, Invert);
+                    ipc.GenerateTile(colorTex, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter, WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow);
 
                 }	
             }
