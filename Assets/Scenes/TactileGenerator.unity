@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -286,13 +285,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TilePrefab: {fileID: 5997940118473086424, guid: a63266da3fbbb495c9237e2b60aeb0f6, type: 3}
   TextureDir: brodatz
-  TestTexture: {fileID: 2800000, guid: 7737b4d5cbbb74da791f7fca6f4998e3, type: 3}
+  TestTexture: {fileID: 2800000, guid: d7a5fe70511fd4bc4bbe0b2ac2564703, type: 3}
   WorldWidth: 0.0508
   WorldHeight: 0.0508
   BaseSize: 0.002
-  TileSize: 0.0015
-  Invert: 1
+  TileSize: 0.002
+  Invert: 0
   ScaleQuarter: 1
+  WriteMM: 0
+  CastingOption: 0
+  CastingInvert: 0
+  CastingBorderSize: 0.0127
+  Smooth: 0
+  SmoothWindow: 2
 --- !u!1 &2016077412
 GameObject:
   m_ObjectHideFlags: 0

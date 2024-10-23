@@ -29,13 +29,13 @@ public class TactileTile : MonoBehaviour
         }
 
         int castingTrisWidth = 0;
-        int sphereWidth = 0;
+        float sphereWidth = 0;
 
         if(castingOption)
         {
             //base number of additional triangles on texture size...
             castingTrisWidth = (int)((float)(castingBorderSize / worldWidth) * (float)widthPixels);
-            sphereWidth = (castingTrisWidth / 4);
+            sphereWidth = (castingTrisWidth / 4f);
             //Debug.Log(castingTrisWidth);
 
             heightPixels += (2 * castingTrisWidth);
@@ -130,77 +130,10 @@ public class TactileTile : MonoBehaviour
                     {
                         c = tex.GetPixel(wIdx, hIdx);
                     }
-                    else
-                    {
-                        //if within hemisphere area...
-                        if(i < castingTrisWidth)
-                        {
-                            if(j < castingTrisWidth)
-                            {
-
-                            }
-                            else if(j > heightPixels-castingTrisWidth)
-                            {
-
-                            }
-                        }
-                        else if(i > widthPixels - castingTrisWidth)
-                        {
-                            if(j < castingTrisWidth)
-                            {
-
-                            }
-                            else if(j > heightPixels-castingTrisWidth)
-                            {
-
-                            }
-                        }
-
-                    }
                 }
                 else
                 {
-                    if(Smooth)
-                    {
-                        Color heightSum = Color.black;
-                        for(int k = j-SmoothWindow; k <= j+SmoothWindow; ++k)
-                        {
-                            for(int l = i-SmoothWindow; l <= i+SmoothWindow; ++l)
-                            {
-                                int hIdx = k;
-                                int wIdx = l;
-
-                                if(wIdx < 0)
-                                {
-                                    wIdx = 0;
-                                }
-
-                                if(hIdx < 0)
-                                {
-                                    hIdx = 0;
-                                }
-
-                                if(wIdx > widthPixels-1)
-                                {
-                                    wIdx = widthPixels-1;
-                                }
-
-                                if(hIdx > heightPixels-1)
-                                {
-                                    hIdx = heightPixels-1;
-                                }
-
-                                heightSum += tex.GetPixel(wIdx, hIdx);
-
-                            }
-                        }
-
-                        c = (heightSum / (float)((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1)));
-                    }
-                    else
-                    {
-                        c = tex.GetPixel(i, j);
-                    }
+                    c = tex.GetPixel(i, j);
                 }
 
 				
@@ -232,13 +165,13 @@ public class TactileTile : MonoBehaviour
         {
             for(int i = 0; i < widthPixels; i++)
             {
-                Color c = Color.white;
+                Color c = Color.black;
+                bool bothIn = true;
+
                 if(castingOption)
                 {
                     int wIdx = i;
                     int hIdx = j;
-
-                    bool bothIn = true;
 
                     if(i > castingTrisWidth && i < widthPixels - castingTrisWidth)
                     {
@@ -261,46 +194,22 @@ public class TactileTile : MonoBehaviour
                     if(bothIn)
                     {
                         c = tex.GetPixel(wIdx, hIdx);
+                        c.g = 0f;
+                    }
+                    else
+                    {
+                        //if within hemisphere area...
+                        if(CalcCastingSphere(i, j, widthPixels, heightPixels, castingTrisWidth, sphereWidth, out c.r))
+                        {
+                            c.g = 1f;
+                        }
                     }
                 }
                 else
                 {
                     if(Smooth)
                     {
-                        Color heightSum = Color.black;
-                        for(int k = j-SmoothWindow; k <= j+SmoothWindow; ++k)
-                        {
-                            for(int l = i-SmoothWindow; l <= i+SmoothWindow; ++l)
-                            {
-                                int hIdx = k;
-                                int wIdx = l;
-
-                                if(wIdx < 0)
-                                {
-                                    wIdx = 0;
-                                }
-
-                                if(hIdx < 0)
-                                {
-                                    hIdx = 0;
-                                }
-
-                                if(wIdx > widthPixels-1)
-                                {
-                                    wIdx = widthPixels-1;
-                                }
-
-                                if(hIdx > heightPixels-1)
-                                {
-                                    hIdx = heightPixels-1;
-                                }
-
-                                heightSum += tex.GetPixel(wIdx, hIdx);
-
-                            }
-                        }
-
-                        c = (heightSum / (float)((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1)));
+                        c = CalcSmoothColor(i, j, widthPixels, heightPixels, SmoothWindow, tex);
                     }
                     else
                     {
@@ -318,7 +227,50 @@ public class TactileTile : MonoBehaviour
                     v = c.r;
                 }
 
-                currVert.y = (baseSize) + tileSize * v;  //sample y value from the texutre...
+                if(castingOption)
+                {
+                    if(c.g == 1f)
+                    {
+                        if(castingInvert)
+                        {
+                            currVert.y = (baseSize) + tileSize * (v);
+                        }
+                        else
+                        {
+                            currVert.y = (baseSize) + tileSize * (1f-v);
+                        }
+                    }
+                    else
+                    {
+                        if(bothIn)
+                        {
+                            if(castingInvert)
+                            {
+                                currVert.y = (baseSize);
+                            }
+                            else
+                            {
+                                currVert.y = tileSize * (1f-v);
+                            }
+                        }
+                        else
+                        {
+                            if(castingInvert)
+                            {
+                                currVert.y = (baseSize);
+                            }
+                            else
+                            {
+                                currVert.y = (baseSize) + tileSize * v;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    currVert.y = (baseSize) + tileSize * v;  //sample y value from the texutre...
+                }
+
                 currVert.x = -halfWidth + (((float)i / ((float)widthPixels-1f)) * worldWidth);
                 currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
                 
@@ -421,5 +373,96 @@ public class TactileTile : MonoBehaviour
         }
 
         //DestroyImmediate(tex, true);
+    }
+
+    bool CalcCastingSphere(int i, int j, int widthPixels, int heightPixels, int castingTrisWidth, float sphereWidth, out float heightVal)
+    {
+        heightVal = 1f;
+        
+        if(i < castingTrisWidth)
+        {
+            if(j < castingTrisWidth)
+            {
+                //check if within circle that is quarter size in radius of the casting with...
+                float dist = Vector2.Distance(new Vector2(i,j), new Vector2(castingTrisWidth/2, castingTrisWidth/2));
+                if(dist < sphereWidth) {
+                    float latAngle = Mathf.PI / 2f * (dist/sphereWidth); // Hemisphere, so only PI/2
+                    heightVal = Mathf.Cos(latAngle);
+                    return true;
+                }
+            }
+            else if(j > heightPixels-castingTrisWidth)
+            {
+                float dist = Vector2.Distance(new Vector2(i,j), new Vector2(castingTrisWidth/2, heightPixels-(castingTrisWidth/2)));
+                if(dist < sphereWidth) {
+                    float latAngle = Mathf.PI / 2f * (dist/sphereWidth); // Hemisphere, so only PI/2
+                    heightVal = Mathf.Cos(latAngle);
+                    return true;
+                }
+            }
+        }
+        else if(i > widthPixels - castingTrisWidth)
+        {
+            if(j < castingTrisWidth)
+            {
+                float dist = Vector2.Distance(new Vector2(i,j), new Vector2(widthPixels-(castingTrisWidth/2), castingTrisWidth/2));
+                if(dist < sphereWidth) {
+                    float latAngle = Mathf.PI / 2f * (dist/sphereWidth); // Hemisphere, so only PI/2
+                    heightVal = Mathf.Cos(latAngle);
+                    return true;
+                }
+            }
+            else if(j > heightPixels-castingTrisWidth)
+            {
+                float dist = Vector2.Distance(new Vector2(i,j), new Vector2(widthPixels-(castingTrisWidth/2), heightPixels-(castingTrisWidth/2)));
+                if(dist < sphereWidth) {
+                    float latAngle = Mathf.PI / 2f * (dist/sphereWidth); // Hemisphere, so only PI/2
+                    heightVal = Mathf.Cos(latAngle);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    Color CalcSmoothColor(int i, int j, int widthPixels, int heightPixels, int SmoothWindow, Texture2D tex)
+    {
+        Color c = Color.black;
+        Color heightSum = Color.black;
+        for(int k = j-SmoothWindow; k <= j+SmoothWindow; ++k)
+        {
+            for(int l = i-SmoothWindow; l <= i+SmoothWindow; ++l)
+            {
+                int hIdx = k;
+                int wIdx = l;
+
+                if(wIdx < 0)
+                {
+                    wIdx = 0;
+                }
+
+                if(hIdx < 0)
+                {
+                    hIdx = 0;
+                }
+
+                if(wIdx > widthPixels-1)
+                {
+                    wIdx = widthPixels-1;
+                }
+
+                if(hIdx > heightPixels-1)
+                {
+                    hIdx = heightPixels-1;
+                }
+
+                heightSum += tex.GetPixel(wIdx, hIdx);
+            }
+        }
+
+        c = (heightSum / (float)((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1)));
+
+        return c;
     }
 }
