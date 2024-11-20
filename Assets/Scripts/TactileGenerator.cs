@@ -90,10 +90,23 @@ public class TactileGenerator : MonoBehaviour
 
                     GameObject ip = Instantiate(TilePrefab);
 
+                    int num = int.Parse(sPNG);
+                    
+                    if(num <= 99)
+                    {
+                        ip.name = int.Parse(sPNG).ToString("D2");
+                    }
+                    else
+                    {
+                        ip.name = sPNG;
+                    }
+
                     TactileTile ipc = ip.GetComponent<TactileTile>();
                     
                     ipc.GenerateTile(colorTex, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter, WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow);
 
+                    ipc.gameObject.SetActive(false);
+                    //UnityEngine.Object.DestroyImmediate(colorTex);
                 }	
             }
         }
