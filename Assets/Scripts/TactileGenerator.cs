@@ -61,6 +61,19 @@ public class TactileGenerator : MonoBehaviour
         if(TestTexture != null)
         {
             GameObject ip = Instantiate(TilePrefab);
+            /*string sPNG = TestTexture.name;
+            sPNG = sPNG.Replace("Assets/Resources/", "");
+            sPNG = sPNG.Replace(".png", "");
+            int num = int.Parse(TestTexture.name);
+            
+            if(num <= 99)
+            {
+                ip.name = num.ToString("D2");
+            }
+            else
+            {
+                ip.name = sPNG;
+            }*/
 
             TactileTile ipc = ip.GetComponent<TactileTile>();
             

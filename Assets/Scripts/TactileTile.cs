@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class TactileTile : MonoBehaviour
 {
-    
-    static int[,,]  DigitLookup = new int[6,10,10];
+    const int LABEL_NUMBER_WIDTH = 24;
+    const int LABEL_NUMBER_HEIGHT = 40;
+
+    static int[,,]  DigitLookup = new int[LABEL_NUMBER_WIDTH,LABEL_NUMBER_HEIGHT,10];
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -19,296 +21,93 @@ public class TactileTile : MonoBehaviour
 
     void InitializeLookup()
     {
-                //digitLookup - 0
-        DigitLookup[0,0,0] = 1;
-        DigitLookup[0,1,0] = 1;
-        DigitLookup[0,2,0] = 1;
-        DigitLookup[0,3,0] = 1;
-        DigitLookup[0,4,0] = 1;
-        DigitLookup[0,5,0] = 1;
-        DigitLookup[0,6,0] = 1;
-        DigitLookup[0,7,0] = 1;
-        DigitLookup[0,8,0] = 1;
-        DigitLookup[0,9,0] = 1;
-        DigitLookup[1,0,0] = 1;
-        DigitLookup[2,0,0] = 1;
-        DigitLookup[3,0,0] = 1;
-        DigitLookup[4,0,0] = 1;
-        DigitLookup[5,0,0] = 1;
-        DigitLookup[5,1,0] = 1;
-        DigitLookup[5,2,0] = 1;
-        DigitLookup[5,3,0] = 1;
-        DigitLookup[5,4,0] = 1;
-        DigitLookup[5,5,0] = 1;
-        DigitLookup[5,6,0] = 1;
-        DigitLookup[5,7,0] = 1;
-        DigitLookup[5,8,0] = 1;
-        DigitLookup[5,9,0] = 1;
-        DigitLookup[1,9,0] = 1;
-        DigitLookup[2,9,0] = 1;
-        DigitLookup[3,9,0] = 1;
-        DigitLookup[4,9,0] = 1;
+        for(int i = 0; i < LABEL_NUMBER_HEIGHT; ++i)
+        {
+            DigitLookup[0,i,0] = 1;
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,0] = 1;
+            DigitLookup[(LABEL_NUMBER_WIDTH/2),i,1] = 1;
+            DigitLookup[(LABEL_NUMBER_WIDTH/2)+1,i,1] = 1;
 
-        //1
-        DigitLookup[2,0,1] = 1;
-        DigitLookup[2,1,1] = 1;
-        DigitLookup[2,2,1] = 1;
-        DigitLookup[2,3,1] = 1;
-        DigitLookup[2,4,1] = 1;
-        DigitLookup[2,5,1] = 1;
-        DigitLookup[2,6,1] = 1;
-        DigitLookup[2,7,1] = 1;
-        DigitLookup[2,8,1] = 1;
-        DigitLookup[2,9,1] = 1;
-        DigitLookup[3,0,1] = 1;
-        DigitLookup[3,1,1] = 1;
-        DigitLookup[3,2,1] = 1;
-        DigitLookup[3,3,1] = 1;
-        DigitLookup[3,4,1] = 1;
-        DigitLookup[3,5,1] = 1;
-        DigitLookup[3,6,1] = 1;
-        DigitLookup[3,7,1] = 1;
-        DigitLookup[3,8,1] = 1;
-        DigitLookup[3,9,1] = 1;
+            DigitLookup[0,i,2] = 1;
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,2] = 1;
+            
+            DigitLookup[0,i,3] = 1;
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,3] = 1;
+            
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,4] = 1;
 
-        //2
-        DigitLookup[0,0,2] = 1;
-        DigitLookup[1,0,2] = 1;
-        DigitLookup[2,0,2] = 1;
-        DigitLookup[3,0,2] = 1;
-        DigitLookup[4,0,2] = 1;
-        DigitLookup[5,0,2] = 1;
-        DigitLookup[0,4,2] = 1;
-        DigitLookup[1,4,2] = 1;
-        DigitLookup[2,4,2] = 1;
-        DigitLookup[3,4,2] = 1;
-        DigitLookup[4,4,2] = 1;
-        DigitLookup[0,5,2] = 1;
-        DigitLookup[1,5,2] = 1;
-        DigitLookup[2,5,2] = 1;
-        DigitLookup[3,5,2] = 1;
-        DigitLookup[4,5,2] = 1;
-        DigitLookup[5,1,2] = 1;
-        DigitLookup[5,2,2] = 1;
-        DigitLookup[5,3,2] = 1;
-        DigitLookup[5,4,2] = 1;
-        DigitLookup[5,5,2] = 1;
-        DigitLookup[0,6,2] = 1;
-        DigitLookup[0,7,2] = 1;
-        DigitLookup[0,8,2] = 1;
-        DigitLookup[0,9,2] = 1;
-        DigitLookup[1,9,2] = 1;
-        DigitLookup[2,9,2] = 1;
-        DigitLookup[3,9,2] = 1;
-        DigitLookup[4,9,2] = 1;
-        DigitLookup[5,9,2] = 1;
+            DigitLookup[0,i,5] = 1;
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,5] = 1;
 
-        //3
-        DigitLookup[0,0,3] = 1;
-        DigitLookup[1,0,3] = 1;
-        DigitLookup[2,0,3] = 1;
-        DigitLookup[3,0,3] = 1;
-        DigitLookup[4,0,3] = 1;
-        DigitLookup[5,0,3] = 1;
-        DigitLookup[1,4,3] = 1;
-        DigitLookup[2,4,3] = 1;
-        DigitLookup[3,4,3] = 1;
-        DigitLookup[4,4,3] = 1;
-        DigitLookup[1,5,3] = 1;
-        DigitLookup[2,5,3] = 1;
-        DigitLookup[3,5,3] = 1;
-        DigitLookup[4,5,3] = 1;
-        DigitLookup[5,1,3] = 1;
-        DigitLookup[5,2,3] = 1;
-        DigitLookup[5,3,3] = 1;
-        DigitLookup[5,4,3] = 1;
-        DigitLookup[5,5,3] = 1;
-        DigitLookup[5,6,3] = 1;
-        DigitLookup[5,7,3] = 1;
-        DigitLookup[5,8,3] = 1;
-        DigitLookup[5,9,3] = 1;
-        DigitLookup[0,9,3] = 1;
-        DigitLookup[1,9,3] = 1;
-        DigitLookup[2,9,3] = 1;
-        DigitLookup[3,9,3] = 1;
-        DigitLookup[4,9,3] = 1;
+            DigitLookup[0,i,6] = 1;
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,6] = 1;
 
-        //4
-        DigitLookup[0,0,4] = 1;
-        DigitLookup[0,1,4] = 1;
-        DigitLookup[0,2,4] = 1;
-        DigitLookup[0,3,4] = 1;
-        DigitLookup[0,4,4] = 1;
-        DigitLookup[0,5,4] = 0;
-        DigitLookup[1,5,4] = 0;
-        DigitLookup[2,5,4] = 1;
-        DigitLookup[3,5,4] = 1;
-        DigitLookup[4,5,4] = 1;
-        DigitLookup[5,5,4] = 1;
-        DigitLookup[5,0,4] = 1;
-        DigitLookup[5,1,4] = 1;
-        DigitLookup[5,2,4] = 1;
-        DigitLookup[5,3,4] = 1;
-        DigitLookup[5,4,4] = 1;
-        DigitLookup[5,6,4] = 1;
-        DigitLookup[5,7,4] = 1;
-        DigitLookup[5,8,4] = 1;
-        DigitLookup[5,9,4] = 1;
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,7] = 1;
 
-        //5
-        DigitLookup[0,0,5] = 1;
-        DigitLookup[1,0,5] = 1;
-        DigitLookup[2,0,5] = 1;
-        DigitLookup[3,0,5] = 1;
-        DigitLookup[4,0,5] = 1;
-        DigitLookup[5,0,5] = 1;
-        DigitLookup[1,4,5] = 1;
-        DigitLookup[2,4,5] = 1;
-        DigitLookup[3,4,5] = 1;
-        DigitLookup[4,4,5] = 1;
-        DigitLookup[0,5,5] = 1;
-        DigitLookup[1,5,5] = 1;
-        DigitLookup[2,5,5] = 1;
-        DigitLookup[3,5,5] = 1;
-        DigitLookup[4,5,5] = 1;
-        DigitLookup[5,6,5] = 1;
-        DigitLookup[5,7,5] = 1;
-        DigitLookup[5,8,5] = 1;
-        DigitLookup[5,4,5] = 1;
-        DigitLookup[5,5,5] = 1;
-        DigitLookup[0,1,5] = 1;
-        DigitLookup[0,2,5] = 1;
-        DigitLookup[0,3,5] = 1;
-        DigitLookup[0,4,5] = 1;
-        DigitLookup[0,9,5] = 1;
-        DigitLookup[1,9,5] = 1;
-        DigitLookup[2,9,5] = 1;
-        DigitLookup[3,9,5] = 1;
-        DigitLookup[4,9,5] = 1;
-        DigitLookup[5,9,5] = 1;
+            DigitLookup[0,i,8] = 1;
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,8] = 1;
 
-        //6
-        DigitLookup[0,0,6] = 1;
-        DigitLookup[1,0,6] = 1;
-        DigitLookup[2,0,6] = 1;
-        DigitLookup[3,0,6] = 1;
-        DigitLookup[4,0,6] = 1;
-        DigitLookup[5,0,6] = 1;
-        DigitLookup[1,4,6] = 1;
-        DigitLookup[2,4,6] = 1;
-        DigitLookup[3,4,6] = 1;
-        DigitLookup[4,4,6] = 1;
-        DigitLookup[0,5,6] = 1;
-        DigitLookup[1,5,6] = 1;
-        DigitLookup[2,5,6] = 1;
-        DigitLookup[3,5,6] = 1;
-        DigitLookup[4,5,6] = 1;
-        DigitLookup[5,6,6] = 1;
-        DigitLookup[5,7,6] = 1;
-        DigitLookup[5,8,6] = 1;
-        DigitLookup[5,4,6] = 1;
-        DigitLookup[5,5,6] = 1;
-        DigitLookup[0,1,6] = 1;
-        DigitLookup[0,2,6] = 1;
-        DigitLookup[0,3,6] = 1;
-        DigitLookup[0,4,6] = 1;
-        DigitLookup[0,6,6] = 1;
-        DigitLookup[0,7,6] = 1;
-        DigitLookup[0,8,6] = 1;
-        DigitLookup[0,9,6] = 1;
-        DigitLookup[1,9,6] = 1;
-        DigitLookup[2,9,6] = 1;
-        DigitLookup[3,9,6] = 1;
-        DigitLookup[4,9,6] = 1;
-        DigitLookup[5,9,6] = 1;
+            DigitLookup[0,i,9] = 1;
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,9] = 1;
+        }
 
-        //7
-        DigitLookup[0,0,7] = 1;
-        DigitLookup[1,0,7] = 1;
-        DigitLookup[2,0,7] = 1;
-        DigitLookup[3,0,7] = 1;
-        DigitLookup[4,0,7] = 1;
-        DigitLookup[5,0,7] = 1;
-        DigitLookup[5,1,7] = 1;
-        DigitLookup[5,2,7] = 1;
-        DigitLookup[5,3,7] = 1;
-        DigitLookup[5,4,7] = 1;
-        DigitLookup[5,5,7] = 1;
-        DigitLookup[5,6,7] = 1;
-        DigitLookup[5,7,7] = 1;
-        DigitLookup[5,8,7] = 1;
-        DigitLookup[5,9,7] = 1;
+        for(int i = 0; i < LABEL_NUMBER_WIDTH; ++i)
+        {
+            DigitLookup[i,0,0] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT-1,0] = 1;
 
-        //8
-        DigitLookup[0,0,8] = 1;
-        DigitLookup[0,1,8] = 1;
-        DigitLookup[0,2,8] = 1;
-        DigitLookup[0,3,8] = 1;
-        DigitLookup[0,4,8] = 1;
-        DigitLookup[0,5,8] = 1;
-        DigitLookup[0,6,8] = 1;
-        DigitLookup[0,7,8] = 1;
-        DigitLookup[0,8,8] = 1;
-        DigitLookup[0,9,8] = 1;
-        DigitLookup[1,0,8] = 1;
-        DigitLookup[2,0,8] = 1;
-        DigitLookup[3,0,8] = 1;
-        DigitLookup[4,0,8] = 1;
-        DigitLookup[5,0,8] = 1;
-        DigitLookup[5,1,8] = 1;
-        DigitLookup[5,2,8] = 1;
-        DigitLookup[5,3,8] = 1;
-        DigitLookup[5,4,8] = 1;
-        DigitLookup[5,5,8] = 1;
-        DigitLookup[5,6,8] = 1;
-        DigitLookup[5,7,8] = 1;
-        DigitLookup[5,8,8] = 1;
-        DigitLookup[5,9,8] = 1;
-        DigitLookup[1,9,8] = 1;
-        DigitLookup[2,9,8] = 1;
-        DigitLookup[3,9,8] = 1;
-        DigitLookup[4,9,8] = 1;
-        DigitLookup[0,4,8] = 1;
-        DigitLookup[1,4,8] = 1;
-        DigitLookup[2,4,8] = 1;
-        DigitLookup[3,4,8] = 1;
-        DigitLookup[4,4,8] = 1;
-        DigitLookup[5,4,8] = 1;
+            DigitLookup[i,0,2] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT-1,2] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT/2,2] = 1;
+            
+            DigitLookup[i,0,3] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT-1,3] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT/2,3] = 1;
+            
+            DigitLookup[i,LABEL_NUMBER_HEIGHT/2,4] = 1;
 
-        //9
-        DigitLookup[0,0,9] = 1;
-        DigitLookup[1,0,9] = 1;
-        DigitLookup[2,0,9] = 1;
-        DigitLookup[3,0,9] = 1;
-        DigitLookup[4,0,9] = 1;
-        DigitLookup[5,0,9] = 1;
-        DigitLookup[1,4,9] = 1;
-        DigitLookup[2,4,9] = 1;
-        DigitLookup[3,4,9] = 1;
-        DigitLookup[4,4,9] = 1;
-        DigitLookup[0,5,9] = 1;
-        DigitLookup[1,5,9] = 1;
-        DigitLookup[2,5,9] = 1;
-        DigitLookup[3,5,9] = 1;
-        DigitLookup[4,5,9] = 1;
-        DigitLookup[5,6,9] = 1;
-        DigitLookup[5,7,9] = 1;
-        DigitLookup[5,8,9] = 1;
-        DigitLookup[5,4,9] = 1;
-        DigitLookup[5,5,9] = 1;
-        DigitLookup[0,1,9] = 1;
-        DigitLookup[0,2,9] = 1;
-        DigitLookup[0,3,9] = 1;
-        DigitLookup[0,4,9] = 1;
-        DigitLookup[5,1,9] = 1;
-        DigitLookup[5,2,9] = 1;
-        DigitLookup[5,3,9] = 1;
-        DigitLookup[0,9,9] = 1;
-        DigitLookup[1,9,9] = 1;
-        DigitLookup[2,9,9] = 1;
-        DigitLookup[3,9,9] = 1;
-        DigitLookup[4,9,9] = 1;
-        DigitLookup[5,9,9] = 1;
+            DigitLookup[i,0,5] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT-1,5] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT/2,5] = 1;
+            
+            DigitLookup[i,0,6] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT-1,6] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT/2,6] = 1;
+
+            DigitLookup[i,0,7] = 1;
+
+            DigitLookup[i,0,8] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT-1,8] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT/2,8] = 1;
+            
+
+            DigitLookup[i,0,9] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT-1,9] = 1;
+            DigitLookup[i,LABEL_NUMBER_HEIGHT/2,9] = 1;
+        }
+
+        for(int i = LABEL_NUMBER_HEIGHT/2; i < LABEL_NUMBER_HEIGHT; ++i)
+        {
+             DigitLookup[0,i,9] = 0;
+             DigitLookup[0,i,5] = 0;
+             DigitLookup[0,i,3] = 0;
+
+             DigitLookup[LABEL_NUMBER_WIDTH-1,i,2] = 0;
+        }
+
+        for(int i = 0; i < LABEL_NUMBER_HEIGHT/2; ++i)
+        {
+            //if(i < (LABEL_NUMBER_HEIGHT/2)-1)
+            {
+                DigitLookup[0,i,2] = 0;
+                DigitLookup[0,i,3] = 0;
+            }
+            
+            DigitLookup[0,i,4] = 1;
+
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,5] = 0;
+            DigitLookup[LABEL_NUMBER_WIDTH-1,i,6] = 0;
+        }
     }
 
     public void GenerateTile(Texture2D tex, float worldWidth, float worldHeight, float baseSize, 
@@ -399,6 +198,10 @@ public class TactileTile : MonoBehaviour
                     
         Debug.Log(s);
 
+        int HALF_LABEL_BOUNDS_WIDTH = (LABEL_NUMBER_WIDTH * 2 + 6);
+        int START_LABEL_HEIGHT = 30;
+        int SPACING = 8;
+
         //bottom
 		for(int j = 0; j < heightPixels; j++)
         {
@@ -444,12 +247,13 @@ public class TactileTile : MonoBehaviour
                 {
                     currVert.y = 0.0005f;
                 }
-                else if(j >= 30 && j < 40 && i >= (widthPixels / 2) - 15 && i < (widthPixels / 2) + 15)
+                else if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
+                         i >= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH && i < (widthPixels / 2) + HALF_LABEL_BOUNDS_WIDTH)
                 {
-                    int hLookup = j - 30;
-                    int wLookup = (i - ((widthPixels/2)-15));
+                    int hLookup = j - START_LABEL_HEIGHT;
+                    int wLookup = (i - ((widthPixels/2)-HALF_LABEL_BOUNDS_WIDTH));
 
-                    if(i >= (widthPixels / 2) - 15 && i < (widthPixels / 2) - 9 && s.Length > 0)
+                    if(i >= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH && i < (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + LABEL_NUMBER_WIDTH && s.Length > 0)
                     {
                         //1st digit...
                         int d = int.Parse(s[0].ToString());
@@ -465,9 +269,10 @@ public class TactileTile : MonoBehaviour
                             currVert.y = 0f;
                         }
                     }
-                    else if(i > (widthPixels / 2) - 4 && i <= (widthPixels / 2) + 2 && s.Length > 1)
+                    else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH + SPACING) && 
+                    i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && s.Length > 1)
                     {
-                        wLookup -= 12;
+                        wLookup -= (LABEL_NUMBER_WIDTH + SPACING+1);
                         int d = int.Parse(s[1].ToString());
                         //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
 
@@ -480,9 +285,10 @@ public class TactileTile : MonoBehaviour
                             currVert.y = 0f;
                         }
                     }
-                    else if(i > (widthPixels / 2) + 7 && i <= (widthPixels / 2) + 13 && s.Length > 2)
+                    else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2) + SPACING*2 && 
+                    i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && s.Length > 2)
                     {
-                        wLookup -= 23;
+                        wLookup -= (LABEL_NUMBER_WIDTH*2 + (SPACING*2)+1);
                         int d = int.Parse(s[2].ToString());
                         //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
 
