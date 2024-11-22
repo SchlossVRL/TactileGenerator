@@ -103,16 +103,18 @@ public class TactileGenerator : MonoBehaviour
 
                     GameObject ip = Instantiate(TilePrefab);
 
-                    int num = int.Parse(sPNG);
+                    /*string s = sPNG.Substring(1, sPNG.Length);
+                    int num = int.Parse(s);
                     
                     if(num <= 99)
                     {
                         ip.name = int.Parse(sPNG).ToString("D2");
                     }
                     else
-                    {
-                        ip.name = sPNG;
-                    }
+                    {*/
+                    string s = sPNG.Replace("brodatz/", "");
+                    ip.name = s;
+                    //}
 
                     TactileTile ipc = ip.GetComponent<TactileTile>();
                     

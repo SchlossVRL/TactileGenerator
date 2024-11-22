@@ -196,7 +196,7 @@ public class TactileTile : MonoBehaviour
         
         string s = tex.name.Substring(1, tex.name.Length-1);
                     
-        Debug.Log(s);
+        //Debug.Log(s);
 
         int HALF_LABEL_BOUNDS_WIDTH = (LABEL_NUMBER_WIDTH * 2 + 6);
         int START_LABEL_HEIGHT = 30;
