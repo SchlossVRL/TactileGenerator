@@ -44,10 +44,16 @@ public class TactileGenerator : MonoBehaviour
     float CastingBorderSize;
 
     [SerializeField]
+    bool AddCastingDivets;
+
+    [SerializeField]
     bool Smooth;
 
     [SerializeField]
     int SmoothWindow;
+
+    [SerializeField]
+    bool AddB;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -77,7 +83,8 @@ public class TactileGenerator : MonoBehaviour
 
             TactileTile ipc = ip.GetComponent<TactileTile>();
             
-            ipc.GenerateTile(TestTexture, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter, WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow);
+            ipc.GenerateTile(TestTexture, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter, 
+                WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, AddB);
         }
         else
         {
@@ -118,7 +125,8 @@ public class TactileGenerator : MonoBehaviour
 
                     TactileTile ipc = ip.GetComponent<TactileTile>();
                     
-                    ipc.GenerateTile(colorTex, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter, WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow);
+                    ipc.GenerateTile(colorTex, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter, 
+                        WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, AddB);
 
                     ipc.gameObject.SetActive(false);
                     //UnityEngine.Object.DestroyImmediate(colorTex);

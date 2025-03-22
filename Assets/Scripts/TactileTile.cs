@@ -7,6 +7,8 @@ public class TactileTile : MonoBehaviour
 
     static int[,,]  DigitLookup = new int[LABEL_NUMBER_WIDTH,LABEL_NUMBER_HEIGHT,10];
 
+    static int[,] BLookup = new int[LABEL_NUMBER_WIDTH, LABEL_NUMBER_HEIGHT];
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -23,6 +25,12 @@ public class TactileTile : MonoBehaviour
     {
         for(int i = 0; i < LABEL_NUMBER_HEIGHT; ++i)
         {
+            BLookup[0, i] = 1;
+            BLookup[LABEL_NUMBER_WIDTH-1, i] = 0;
+            if(i > 3 && i < (LABEL_NUMBER_HEIGHT/2) - 3 || i > (LABEL_NUMBER_HEIGHT/2) + 3 && i < LABEL_NUMBER_HEIGHT-3) {
+                BLookup[LABEL_NUMBER_WIDTH-1, i] = 1;
+            }
+
             DigitLookup[0,i,0] = 1;
             DigitLookup[LABEL_NUMBER_WIDTH-1,i,0] = 1;
             DigitLookup[(LABEL_NUMBER_WIDTH/2),i,1] = 1;
@@ -84,6 +92,13 @@ public class TactileTile : MonoBehaviour
             DigitLookup[i,0,9] = 1;
             DigitLookup[i,LABEL_NUMBER_HEIGHT-1,9] = 1;
             DigitLookup[i,LABEL_NUMBER_HEIGHT/2,9] = 1;
+
+            //if(i < LABEL_NUMBER_WIDTH - 3)
+            {
+                BLookup[i, 0] = 1;
+                BLookup[i, LABEL_NUMBER_HEIGHT/2] = 1;
+                BLookup[i, LABEL_NUMBER_HEIGHT-1] = 1;
+            }
         }
 
         for(int i = LABEL_NUMBER_HEIGHT/2; i < LABEL_NUMBER_HEIGHT; ++i)
@@ -108,11 +123,34 @@ public class TactileTile : MonoBehaviour
             DigitLookup[LABEL_NUMBER_WIDTH-1,i,5] = 0;
             DigitLookup[LABEL_NUMBER_WIDTH-1,i,6] = 0;
         }
+
+        for(int i = LABEL_NUMBER_WIDTH - 4; i < LABEL_NUMBER_WIDTH; ++i)
+        {
+            BLookup[i, 0] = 0;
+            BLookup[i, LABEL_NUMBER_HEIGHT/2] = 0;
+            BLookup[i, LABEL_NUMBER_HEIGHT-1] = 0;
+        }
+
+        BLookup[LABEL_NUMBER_WIDTH - 4, LABEL_NUMBER_HEIGHT-2] = 1;
+        BLookup[LABEL_NUMBER_WIDTH - 3, LABEL_NUMBER_HEIGHT-3] = 1;
+        BLookup[LABEL_NUMBER_WIDTH - 2, LABEL_NUMBER_HEIGHT-4] = 1;
+
+        BLookup[LABEL_NUMBER_WIDTH - 4, 1] = 1;
+        BLookup[LABEL_NUMBER_WIDTH - 3, 2] = 1;
+        BLookup[LABEL_NUMBER_WIDTH - 2, 3] = 1;
+        
+        BLookup[LABEL_NUMBER_WIDTH - 4, (LABEL_NUMBER_HEIGHT/2)+1] = 1;
+        BLookup[LABEL_NUMBER_WIDTH - 3, (LABEL_NUMBER_HEIGHT/2)+2] = 1;
+        BLookup[LABEL_NUMBER_WIDTH - 2, (LABEL_NUMBER_HEIGHT/2)+3] = 1;
+
+        BLookup[LABEL_NUMBER_WIDTH - 4, (LABEL_NUMBER_HEIGHT/2)-1] = 1;
+        BLookup[LABEL_NUMBER_WIDTH - 3, (LABEL_NUMBER_HEIGHT/2)-2] = 1;
+        BLookup[LABEL_NUMBER_WIDTH - 2, (LABEL_NUMBER_HEIGHT/2)-3] = 1;
     }
 
     public void GenerateTile(Texture2D tex, float worldWidth, float worldHeight, float baseSize, 
     float tileSize, bool invert, bool scaleQuarter=false, bool writeMM=false, bool castingOption=false, 
-    float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0)
+    float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddB=false)
     {
         InitializeLookup();
 
@@ -199,6 +237,13 @@ public class TactileTile : MonoBehaviour
         //Debug.Log(s);
 
         int HALF_LABEL_BOUNDS_WIDTH = (LABEL_NUMBER_WIDTH * 2 + 6);
+        
+        if(AddB && s.Length > 2) {
+            HALF_LABEL_BOUNDS_WIDTH = 62;
+        } else if(AddB && s.Length == 1) {
+            HALF_LABEL_BOUNDS_WIDTH = (LABEL_NUMBER_WIDTH + 6);
+        }
+
         int START_LABEL_HEIGHT = 30;
         int SPACING = 8;
 
@@ -257,23 +302,42 @@ public class TactileTile : MonoBehaviour
                     {
                         //1st digit...
                         int d = int.Parse(s[0].ToString());
-                        //Debug.Log(wLookup + ", " + hLookup + ", " + d + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
-
-                        if(TactileTile.DigitLookup[wLookup,hLookup,d] > 0)
-                        {
-                            currVert.y = 0.0005f;
-                            //Debug.Log("Yes");
+                        if(AddB) {
+                            if(TactileTile.BLookup[wLookup,hLookup] > 0)
+                            {
+                                currVert.y = 0.0005f;
+                                //Debug.Log("Yes");
+                            }
+                            else
+                            {
+                                currVert.y = 0f;
+                            }
                         }
                         else
                         {
-                            currVert.y = 0f;
+                        //Debug.Log(wLookup + ", " + hLookup + ", " + d + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
+
+                            if(TactileTile.DigitLookup[wLookup,hLookup,d] > 0)
+                            {
+                                currVert.y = 0.0005f;
+                                //Debug.Log("Yes");
+                            }
+                            else
+                            {
+                                currVert.y = 0f;
+                            }
                         }
                     }
                     else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH + SPACING) && 
-                    i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && s.Length > 1)
+                    i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && ((s.Length > 1) || (AddB && s.Length > 0)))
                     {
                         wLookup -= (LABEL_NUMBER_WIDTH + SPACING+1);
-                        int d = int.Parse(s[1].ToString());
+                        int d = 0;
+                        if(AddB) {
+                            d = int.Parse(s[0].ToString());
+                        } else {
+                            d = int.Parse(s[1].ToString());
+                        }
                         //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
 
                         if(DigitLookup[wLookup,hLookup,d] > 0)
@@ -286,12 +350,31 @@ public class TactileTile : MonoBehaviour
                         }
                     }
                     else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2) + SPACING*2 && 
-                    i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && s.Length > 2)
+                        i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && ((s.Length > 2) || (AddB && s.Length > 1)) )
                     {
                         wLookup -= (LABEL_NUMBER_WIDTH*2 + (SPACING*2)+1);
-                        int d = int.Parse(s[2].ToString());
+                        int d = 0;
+                        if(AddB) {
+                            d = int.Parse(s[1].ToString());
+                        } else {
+                            d = int.Parse(s[2].ToString());
+                        }
                         //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
 
+                        if(DigitLookup[wLookup,hLookup,d] > 0)
+                        {
+                            currVert.y = 0.0005f;
+                        }
+                        else
+                        {
+                            currVert.y = 0f;
+                        }
+                    }
+                    else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3) + SPACING*3 && 
+                        i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*4 + SPACING*3) && (AddB && s.Length > 2))
+                    {
+                        wLookup -= (LABEL_NUMBER_WIDTH*3 + (SPACING*3)+1);
+                        int d = int.Parse(s[2].ToString());
                         if(DigitLookup[wLookup,hLookup,d] > 0)
                         {
                             currVert.y = 0.0005f;
@@ -380,9 +463,12 @@ public class TactileTile : MonoBehaviour
                     else
                     {
                         //if within hemisphere area...
-                        if(CalcCastingSphere(i, j, widthPixels, heightPixels, castingTrisWidth, sphereWidth, out c.r))
+                        if(AddCastingDivets)
                         {
-                            c.g = 1f;
+                            if(CalcCastingSphere(i, j, widthPixels, heightPixels, castingTrisWidth, sphereWidth, out c.r))
+                            {
+                                c.g = 1f;
+                            }
                         }
                     }
                 }
