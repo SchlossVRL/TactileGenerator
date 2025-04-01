@@ -541,6 +541,8 @@ public class TactileTile : MonoBehaviour
                 currVert.x = -halfWidth + (((float)i / ((float)widthPixels-1f)) * worldWidth);
                 currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
                 
+                //currVert.y = (baseSize) + tileSize;
+
                 verts[vertIndex] = currVert;
                 //normals[vertIndex] = Vector3.up;
                 colors[vertIndex] = c;
