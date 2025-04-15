@@ -8,33 +8,47 @@ public class TactileGenerator : MonoBehaviour
     GameObject TilePrefab;
 
     [SerializeField]
+    [Tooltip("If present, and nothing in TestTexture, generates a tile for each texture in the specified directory from Assets/Resources/")]
     string TextureDir;
 
     [SerializeField]
+    [Tooltip("If present - generates a single tile from this texture.")]
     Texture2D TestTexture;
 
     [SerializeField]
+    [Tooltip("The width of the generated tile. In meters.")]
     float WorldWidth;
 
     [SerializeField]
-    float WorldHeight;
+    [Tooltip("The length of the generated tile. In meters.")]
+    float WorldLength;
 
     [SerializeField]
+    [Tooltip("The height of the base of the tile, before the tile height data. In meters.")]
     float BaseSize;
 
     [SerializeField]
+    [Tooltip("The maximum height of the actual tile height data as created via the brodatz texture. In meters.")]
     float TileSize;
 
     [SerializeField]
+    [Tooltip("The height underneath when creating a casting mold. In meters.")]
+    float CastingBase;
+
+    [SerializeField]
+    [Tooltip("Whether to invert the values of the texture to black high, white low.")]
     bool Invert;
 
     [SerializeField]
+    [Tooltip("Whether to scale a texture to 1 quarter of the texture as the total size (magnifies by 2)")]
     bool ScaleQuarter;
 
     [SerializeField]
+    [Tooltip("Whether to create model in millimeters.")]
     bool WriteMM;
 
     [SerializeField]
+    [Tooltip("If on makes a casting mold of the current tile instead of the tile itself.")]
     bool CastingOption;
 
     [SerializeField]
@@ -43,7 +57,7 @@ public class TactileGenerator : MonoBehaviour
     [SerializeField]
     float CastingBorderSize;
 
-    [SerializeField]
+    //[SerializeField]
     bool AddCastingDivets;
 
     [SerializeField]
@@ -64,6 +78,7 @@ public class TactileGenerator : MonoBehaviour
 
     [SerializeField]
     bool DoSilicone;
+
 
     void Start()
     {
@@ -91,9 +106,14 @@ public class TactileGenerator : MonoBehaviour
             }*/
 
             TactileTile ipc = ip.GetComponent<TactileTile>();
+
+            if(CastingOption) {
+                AddCastingDivets = true;
+            }
             
-            ipc.GenerateTile(TestTexture, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter, 
-                WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, AddLetter, Letter, MakeControl, DoSilicone);
+            ipc.GenerateTile(TestTexture, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
+                WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
+                AddLetter, Letter, MakeControl, DoSilicone, CastingBase);
         }
         else
         {
@@ -133,9 +153,14 @@ public class TactileGenerator : MonoBehaviour
                     //}
 
                     TactileTile ipc = ip.GetComponent<TactileTile>();
+
+                    if(CastingOption) {
+                        AddCastingDivets = true;
+                    }
                     
-                    ipc.GenerateTile(colorTex, WorldWidth, WorldHeight, BaseSize, TileSize, Invert, ScaleQuarter, 
-                        WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, AddLetter, Letter, MakeControl, DoSilicone);
+                    ipc.GenerateTile(colorTex, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
+                        WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
+                        AddLetter, Letter, MakeControl, DoSilicone, CastingBase);
 
                     ipc.gameObject.SetActive(false);
                     //UnityEngine.Object.DestroyImmediate(colorTex);

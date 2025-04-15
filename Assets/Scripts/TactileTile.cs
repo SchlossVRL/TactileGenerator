@@ -16,6 +16,8 @@ public class TactileTile : MonoBehaviour
 
     static int[,] SLookup = new int[LABEL_NUMBER_WIDTH, LABEL_NUMBER_HEIGHT];
 
+    static int[,] GLookup = new int[LABEL_NUMBER_WIDTH, LABEL_NUMBER_HEIGHT];
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -47,6 +49,14 @@ public class TactileTile : MonoBehaviour
                 {
                     PLookup[LABEL_NUMBER_WIDTH-1, i] = 1;
                 }
+            }
+
+            if(i > 3 && i < LABEL_NUMBER_HEIGHT-3) {
+                GLookup[0, i] = 1;
+            }
+
+            if(i > (LABEL_NUMBER_HEIGHT/2) && i < LABEL_NUMBER_HEIGHT) {
+                GLookup[LABEL_NUMBER_WIDTH-1, i] = 1;
             }
 
             DigitLookup[0,i,0] = 1;
@@ -117,7 +127,13 @@ public class TactileTile : MonoBehaviour
                 PLookup[i, 0] = 1;
                 if(i > 3 && i < LABEL_NUMBER_WIDTH - 1) {
                     SLookup[i, 0] = 1;
+                    GLookup[i, 0] = 1;
+                    if(i > 8) {
+                        GLookup[i, LABEL_NUMBER_HEIGHT/2] = 1;
+                    }
+                    GLookup[i, LABEL_NUMBER_HEIGHT-1] = 1;
                 }
+
                 ELookup[i, 0] = 1;
                 FLookup[i, 0] = 1;
 
@@ -213,6 +229,15 @@ public class TactileTile : MonoBehaviour
         SLookup[1, 1] = 1;
         SLookup[2, 0] = 1;
 
+        GLookup[0, 3] = 1;
+        GLookup[1, 2] = 1;
+        GLookup[2, 1] = 1;
+        GLookup[3, 0] = 1;
+
+        GLookup[0, LABEL_NUMBER_HEIGHT - 4] = 1;
+        GLookup[1, LABEL_NUMBER_HEIGHT - 3] = 1;
+        GLookup[2, LABEL_NUMBER_HEIGHT - 2] = 1;
+        GLookup[3, LABEL_NUMBER_HEIGHT - 1] = 1;
 
         SLookup[LABEL_NUMBER_WIDTH - 1, LABEL_NUMBER_HEIGHT - 3] = 1;
         SLookup[LABEL_NUMBER_WIDTH - 2, LABEL_NUMBER_HEIGHT - 2] = 1;
@@ -245,6 +270,8 @@ public class TactileTile : MonoBehaviour
             return (TactileTile.ELookup[wLookup,hLookup] > 0);
         } else if(letter == 'f') {
             return (TactileTile.FLookup[wLookup,hLookup] > 0);
+        } else if(letter == 'g') {
+            return (TactileTile.GLookup[wLookup,hLookup] > 0);
         }
 
         return false;
@@ -253,14 +280,12 @@ public class TactileTile : MonoBehaviour
     public void GenerateTile(Texture2D tex, float worldWidth, float worldHeight, float baseSize, 
     float tileSize, bool invert, bool scaleQuarter=false, bool writeMM=false, bool castingOption=false, 
     float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
-    bool makeControl=false, bool doSilicone=false)
+    bool makeControl=false, bool doSilicone=false, float castingBase=0.002f)
     {
         InitializeLookup();
 
         int heightPixels = tex.height;
         int widthPixels = tex.width;
-
-        float castingBase = 0.002f;
 
         if(scaleQuarter)
         {
@@ -360,6 +385,7 @@ public class TactileTile : MonoBehaviour
         {
             for(int i = 0; i < widthPixels; i++)
             {
+
                 Color c = Color.white;
                 if(castingOption)
                 {
@@ -529,7 +555,8 @@ public class TactileTile : MonoBehaviour
 
                 if(castingOption)
                 {
-                    int wIdx = i;
+                    int wIdx = widthPixels-1-i;
+                    //int wIdx = i;
                     int hIdx = j;
 
                     if(i > castingTrisWidth && i < widthPixels - castingTrisWidth)
@@ -729,7 +756,11 @@ public class TactileTile : MonoBehaviour
                         }
                         else
                         {
-                            currVert.y = castingBase + (baseSize) + tileSize * (1f-v);
+                            if(doSilicone) {    //don't add the casting divets for silicone (omit the 1-v multiplier as it is below)
+                                currVert.y = castingBase + (baseSize) + tileSize;
+                            } else {
+                                currVert.y = castingBase + (baseSize) + tileSize * (1f-v);
+                            }
                         }
                     }
                     else
@@ -742,8 +773,12 @@ public class TactileTile : MonoBehaviour
                             }
                             else
                             {
-                                //currVert.y = castingBase + tileSize * (1f-v);   //foam
-                                currVert.y = tileSize * (1f-v);   //silicone
+                                //currVert.y = baseSize + tileSize * (1f-v);
+                                currVert.y = (castingBase + baseSize + tileSize) - (baseSize + tileSize * (v));
+
+                                if(makeControl) {
+                                    currVert.y = castingBase;// + tileSize;
+                                }
                             }
                         }
                         else
@@ -754,9 +789,19 @@ public class TactileTile : MonoBehaviour
                             }
                             else
                             {
+                                //Debug.Log("hitting: " + v);
                                 currVert.y = castingBase + (baseSize) + tileSize * v;
+
                                 if(numberArea) {
                                     currVert.y = castingBase + (baseSize) - 0.0005f;
+                                }
+
+                                if(makeControl) {
+                                    if(numberArea) {
+                                        currVert.y = castingBase + (baseSize) + tileSize - 0.0005f;
+                                    } else {
+                                        currVert.y = castingBase + (baseSize) + tileSize;// + tileSize;
+                                    }
                                 }
                             }
                         }
@@ -765,14 +810,15 @@ public class TactileTile : MonoBehaviour
                 else
                 {
                     currVert.y = (baseSize) + tileSize * v;  //sample y value from the texutre...
+                    if(makeControl) {
+                        currVert.y = (baseSize) + tileSize;
+                    }
                 }
 
                 currVert.x = -halfWidth + (((float)i / ((float)widthPixels-1f)) * worldWidth);
                 currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
                 
-                if(makeControl) {
-                    currVert.y = (baseSize) + tileSize;
-                }
+
 
                 verts[vertIndex] = currVert;
                 //normals[vertIndex] = Vector3.up;
