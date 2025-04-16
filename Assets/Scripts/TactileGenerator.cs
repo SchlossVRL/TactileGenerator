@@ -79,6 +79,20 @@ public class TactileGenerator : MonoBehaviour
     [SerializeField]
     bool DoSilicone;
 
+    [SerializeField]
+    bool AddBorder;
+
+    [SerializeField]
+    int NumBorderTriangles;
+
+    [SerializeField]
+    bool AddCustomDivets;
+
+    [SerializeField]
+    float DivetOffset;
+
+    [SerializeField]
+    float DivetRadius;
 
     void Start()
     {
@@ -113,7 +127,8 @@ public class TactileGenerator : MonoBehaviour
             
             ipc.GenerateTile(TestTexture, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
                 WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
-                AddLetter, Letter, MakeControl, DoSilicone, CastingBase);
+                AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
+                DivetOffset, DivetRadius);
         }
         else
         {
@@ -160,7 +175,8 @@ public class TactileGenerator : MonoBehaviour
                     
                     ipc.GenerateTile(colorTex, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
                         WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
-                        AddLetter, Letter, MakeControl, DoSilicone, CastingBase);
+                        AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
+                        DivetOffset, DivetRadius);
 
                     ipc.gameObject.SetActive(false);
                     //UnityEngine.Object.DestroyImmediate(colorTex);

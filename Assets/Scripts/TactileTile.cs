@@ -278,9 +278,10 @@ public class TactileTile : MonoBehaviour
     }
 
     public void GenerateTile(Texture2D tex, float worldWidth, float worldHeight, float baseSize, 
-    float tileSize, bool invert, bool scaleQuarter=false, bool writeMM=false, bool castingOption=false, 
-    float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
-    bool makeControl=false, bool doSilicone=false, float castingBase=0.002f)
+        float tileSize, bool invert, bool scaleQuarter=false, bool writeMM=false, bool castingOption=false, 
+        float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
+        bool makeControl=false, bool doSilicone=false, float castingBase=0.002f, bool addTileBorder=false, int borderTris=0, bool addCustomDivets=false, float divetOffset=0f,
+        float divetRadius = 0f )
     {
         InitializeLookup();
 
@@ -300,6 +301,7 @@ public class TactileTile : MonoBehaviour
         {
             //base number of additional triangles on texture size...
             castingTrisWidth = (int)((float)(castingBorderSize / worldWidth) * (float)widthPixels);
+            //Debug.Log(castingTrisWidth);
             sphereWidth = (castingTrisWidth / 4.0f);    //3.8f
             //Debug.Log(castingTrisWidth);
 
@@ -552,6 +554,7 @@ public class TactileTile : MonoBehaviour
                 Color c = Color.black;
                 bool bothIn = true;
                 bool numberArea = false;
+                bool onBorder = false;
 
                 if(castingOption)
                 {
@@ -566,9 +569,12 @@ public class TactileTile : MonoBehaviour
                     else
                     {
                         bothIn = false;
-
-                        if(i == castingTrisWidth || i == widthPixels - castingTrisWidth) {
-                            
+                        if(addTileBorder) {
+                            if(((i >= castingTrisWidth - borderTris) && (i <= castingTrisWidth) || 
+                            (i >= widthPixels - castingTrisWidth) && (i <= (widthPixels - castingTrisWidth + borderTris))) && 
+                            ((j <= heightPixels - castingTrisWidth + borderTris) && j >= castingTrisWidth - borderTris)) {
+                                onBorder = true;
+                            }
                         }
                     }
 
@@ -579,9 +585,12 @@ public class TactileTile : MonoBehaviour
                     else
                     {
                         bothIn = false;
-
-                        if(j == castingTrisWidth || j == heightPixels - castingTrisWidth) {
-                            
+                        if(addTileBorder) {
+                            if(((j >= castingTrisWidth - borderTris) && (j <= castingTrisWidth) ||
+                             (j >= heightPixels - castingTrisWidth) && (j <= (widthPixels - castingTrisWidth + borderTris))) &&
+                             ((i <= widthPixels - castingTrisWidth + borderTris) && i >= castingTrisWidth - borderTris)) {
+                                onBorder = true;
+                            }
                         }
                     }
 
@@ -602,9 +611,16 @@ public class TactileTile : MonoBehaviour
                         //if within hemisphere area...
                         if(AddCastingDivets)
                         {
-                            if(CalcCastingSphere(i, j, widthPixels, heightPixels, castingTrisWidth, sphereWidth, out c.r))
-                            {
-                                c.g = 1f;
+                            if(addCustomDivets) {
+                                if(CalcCastingSphereCustom(i, j, castingTrisWidth, widthPixels, heightPixels, worldWidth, worldHeight, halfWidth, halfHeight, divetOffset, divetRadius, out c.r))
+                                {
+                                    c.g = 1f;
+                                }
+                            } else {
+                                if(CalcCastingSphere(i, j, widthPixels, heightPixels, castingTrisWidth, sphereWidth, out c.r))
+                                {
+                                    c.g = 1f;
+                                }
                             }
                         }
 
@@ -790,7 +806,12 @@ public class TactileTile : MonoBehaviour
                             else
                             {
                                 //Debug.Log("hitting: " + v);
-                                currVert.y = castingBase + (baseSize) + tileSize * v;
+                                //add extra border here...
+                                if(onBorder) {
+                                    currVert.y = castingBase;// + (baseSize);
+                                } else {
+                                    currVert.y = castingBase + (baseSize) + tileSize * v;
+                                }
 
                                 if(numberArea) {
                                     currVert.y = castingBase + (baseSize) - 0.0005f;
@@ -800,7 +821,9 @@ public class TactileTile : MonoBehaviour
                                     if(numberArea) {
                                         currVert.y = castingBase + (baseSize) + tileSize - 0.0005f;
                                     } else {
-                                        currVert.y = castingBase + (baseSize) + tileSize;// + tileSize;
+                                        if(!onBorder) {
+                                            currVert.y = castingBase + (baseSize) + tileSize;// + tileSize;
+                                        }
                                     }
                                 }
                             }
@@ -818,8 +841,6 @@ public class TactileTile : MonoBehaviour
                 currVert.x = -halfWidth + (((float)i / ((float)widthPixels-1f)) * worldWidth);
                 currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
                 
-
-
                 verts[vertIndex] = currVert;
                 //normals[vertIndex] = Vector3.up;
                 colors[vertIndex] = c;
@@ -919,6 +940,79 @@ public class TactileTile : MonoBehaviour
         }
 
         //DestroyImmediate(tex, true);
+    }
+
+    bool CalcCastingSphereCustom(int i, int j, int castingTrisWidth, int widthPixels, int heightPixels, float worldWidth, float worldHeight, float halfWidth, float halfHeight,
+        float divetOffset, float divetRadius, out float heightVal)
+    {
+        heightVal = 1f;
+
+        Vector2 world2DPos = new Vector2(0f, 0f);
+        //do the distance check here based on divet offset and radius depending on what quadrant we are in...
+        world2DPos.x = -halfWidth + (((float)i / ((float)widthPixels-1f)) * worldWidth);
+        world2DPos.y = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
+        
+
+        if(i < castingTrisWidth)
+        {
+            if(j < castingTrisWidth)
+            {
+                Vector2 world2DPosCorner = new Vector2(0f, 0f);
+                world2DPosCorner.x = -halfWidth + divetOffset;
+                world2DPosCorner.y = -halfHeight + divetOffset;
+
+                float dist = Vector2.Distance(world2DPos, world2DPosCorner);
+                if(dist < divetRadius) {
+                    float latAngle = Mathf.PI / 2f * (dist/divetRadius); // Hemisphere, so only PI/2
+                    heightVal = Mathf.Cos(latAngle);
+                    return true;
+                }
+            }
+            else if(j > heightPixels-castingTrisWidth)
+            {
+                Vector2 world2DPosCorner = new Vector2(0f, 0f);
+                world2DPosCorner.x = -halfWidth + divetOffset;
+                world2DPosCorner.y = -halfHeight + worldHeight - divetOffset;
+        
+                float dist = Vector2.Distance(world2DPos, world2DPosCorner);
+                if(dist < divetRadius) {
+                    float latAngle = Mathf.PI / 2f * (dist/divetRadius); // Hemisphere, so only PI/2
+                    heightVal = Mathf.Cos(latAngle);
+                    return true;
+                }
+            }
+        }
+        else if(i > widthPixels - castingTrisWidth)
+        {
+            if(j < castingTrisWidth)
+            {
+                Vector2 world2DPosCorner = new Vector2(0f, 0f);
+                world2DPosCorner.x = -halfWidth + worldWidth - divetOffset;
+                world2DPosCorner.y = -halfHeight + divetOffset;
+        
+                float dist = Vector2.Distance(world2DPos, world2DPosCorner);
+                if(dist < divetRadius) {
+                    float latAngle = Mathf.PI / 2f * (dist/divetRadius); // Hemisphere, so only PI/2
+                    heightVal = Mathf.Cos(latAngle);
+                    return true;
+                }
+            }
+            else if(j > heightPixels-castingTrisWidth)
+            {
+                Vector2 world2DPosCorner = new Vector2(0f, 0f);
+                world2DPosCorner.x = -halfWidth + worldWidth - divetOffset;
+                world2DPosCorner.y = -halfHeight + worldHeight - divetOffset;
+        
+                float dist = Vector2.Distance(world2DPos, world2DPosCorner);
+                if(dist < divetRadius) {
+                    float latAngle = Mathf.PI / 2f * (dist/divetRadius); // Hemisphere, so only PI/2
+                    heightVal = Mathf.Cos(latAngle);
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     bool CalcCastingSphere(int i, int j, int widthPixels, int heightPixels, int castingTrisWidth, float sphereWidth, out float heightVal)
