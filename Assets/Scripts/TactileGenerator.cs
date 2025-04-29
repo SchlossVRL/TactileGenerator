@@ -44,10 +44,6 @@ public class TactileGenerator : MonoBehaviour
     bool ScaleQuarter;
 
     [SerializeField]
-    [Tooltip("Whether to create model in millimeters.")]
-    bool WriteMM;
-
-    [SerializeField]
     [Tooltip("If on makes a casting mold of the current tile instead of the tile itself.")]
     bool CastingOption;
 
@@ -126,7 +122,7 @@ public class TactileGenerator : MonoBehaviour
             }
             
             ipc.GenerateTile(TestTexture, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
-                WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
+                CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                 AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
                 DivetOffset, DivetRadius);
         }
@@ -174,7 +170,7 @@ public class TactileGenerator : MonoBehaviour
                     }
                     
                     ipc.GenerateTile(colorTex, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
-                        WriteMM, CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
+                        CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                         AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
                         DivetOffset, DivetRadius);
 

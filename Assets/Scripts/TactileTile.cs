@@ -278,7 +278,7 @@ public class TactileTile : MonoBehaviour
     }
 
     public void GenerateTile(Texture2D tex, float worldWidth, float worldHeight, float baseSize, 
-        float tileSize, bool invert, bool scaleQuarter=false, bool writeMM=false, bool castingOption=false, 
+        float tileSize, bool invert, bool scaleQuarter=false,  bool castingOption=false, 
         float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
         bool makeControl=false, bool doSilicone=false, float castingBase=0.002f, bool addTileBorder=false, int borderTris=0, bool addCustomDivets=false, float divetOffset=0f,
         float divetRadius = 0f )
@@ -339,14 +339,6 @@ public class TactileTile : MonoBehaviour
         int numVerts = widthPixels * heightPixels * 2;//+ tex.width * 2 + tex.height * 2;
         int numTrianglesIndices = ((widthPixels) * (heightPixels)) * 12 + widthPixels * 12 + heightPixels * 12;
         //Debug.Log(numTrianglesIndices);
-
-        if(writeMM)
-        {
-            worldWidth *= 1000f;
-            worldHeight *= 1000f;
-            baseSize *= 1000f;
-            tileSize *= 1000f;
-        }
 
         float halfWidth = worldWidth * 0.5f;
         float halfHeight = worldHeight * 0.5f;
