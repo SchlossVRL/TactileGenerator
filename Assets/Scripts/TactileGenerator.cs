@@ -44,6 +44,10 @@ public class TactileGenerator : MonoBehaviour
     bool ScaleQuarter;
 
     [SerializeField]
+    [Tooltip("Take the middle 1/3 of the current tactile texture for sampling")]
+    bool BarChart;
+
+    [SerializeField]
     [Tooltip("If on makes a casting mold of the current tile instead of the tile itself.")]
     bool CastingOption;
 
@@ -124,7 +128,7 @@ public class TactileGenerator : MonoBehaviour
             ipc.GenerateTile(TestTexture, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
                 CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                 AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
-                DivetOffset, DivetRadius);
+                DivetOffset, DivetRadius, BarChart);
         }
         else
         {
@@ -172,7 +176,7 @@ public class TactileGenerator : MonoBehaviour
                     ipc.GenerateTile(colorTex, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
                         CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                         AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
-                        DivetOffset, DivetRadius);
+                        DivetOffset, DivetRadius, BarChart);
 
                     ipc.gameObject.SetActive(false);
                     //UnityEngine.Object.DestroyImmediate(colorTex);

@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class TactileTile : MonoBehaviour
 {
-    const int LABEL_NUMBER_WIDTH = 24;
-    const int LABEL_NUMBER_HEIGHT = 40;
+    const int LABEL_NUMBER_WIDTH = 12;  //24    //divided both by 2 for bar chart sizes...
+    const int LABEL_NUMBER_HEIGHT = 20; //40
 
     static int[,,]  DigitLookup = new int[LABEL_NUMBER_WIDTH,LABEL_NUMBER_HEIGHT,10];
 
@@ -281,7 +281,7 @@ public class TactileTile : MonoBehaviour
         float tileSize, bool invert, bool scaleQuarter=false,  bool castingOption=false, 
         float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
         bool makeControl=false, bool doSilicone=false, float castingBase=0.002f, bool addTileBorder=false, int borderTris=0, bool addCustomDivets=false, float divetOffset=0f,
-        float divetRadius = 0f )
+        float divetRadius = 0f, bool barChart=false )
     {
         InitializeLookup();
 
@@ -292,6 +292,16 @@ public class TactileTile : MonoBehaviour
         {
             heightPixels = heightPixels / 2;
             widthPixels = widthPixels / 2;
+        }
+
+        float widthIncrement = worldWidth / (float)widthPixels;
+        float heightIncrement = worldHeight / (float)heightPixels;
+
+        if(barChart) {
+            widthIncrement = (worldWidth / ((float)(widthPixels-1f))) * 3f;// * 0.3333333f;
+            widthPixels /= 3;
+            
+            //widthPixels = widthPixels+1;
         }
 
         int castingTrisWidth = 0;
@@ -310,27 +320,6 @@ public class TactileTile : MonoBehaviour
             
             worldWidth += (2 * castingBorderSize);
             worldHeight += (2 * castingBorderSize);
-
-            /*Vector3[] vertices = new Vector3[(longitudeSegments + 1) * (latitudeSegments + 1)];
-            
-            int index = 0;
-
-            for (int lat = 0; lat <= latitudeSegments; lat++)
-            {
-                float latAngle = Mathf.PI / 2 * (lat / (float)latitudeSegments); // Hemisphere, so only PI/2
-                float y = Mathf.Sin(latAngle); // y coordinate
-
-                for (int lon = 0; lon <= longitudeSegments; lon++)
-                {
-                    float lonAngle = 2 * Mathf.PI * (lon / (float)longitudeSegments);
-                    float x = Mathf.Cos(lonAngle) * Mathf.Cos(latAngle); // x coordinate
-                    float z = Mathf.Sin(lonAngle) * Mathf.Cos(latAngle); // z coordinate
-
-                    vertices[index] = new Vector3(x, y, z) * radius;
-
-                    index++;
-                }
-            }*/
         }
 
         int BASE_VERT_OFFSET = widthPixels * heightPixels;// * 2;
@@ -339,6 +328,12 @@ public class TactileTile : MonoBehaviour
         int numVerts = widthPixels * heightPixels * 2;//+ tex.width * 2 + tex.height * 2;
         int numTrianglesIndices = ((widthPixels) * (heightPixels)) * 12 + widthPixels * 12 + heightPixels * 12;
         //Debug.Log(numTrianglesIndices);
+
+        int LINE_LENGTH = 50;
+
+        if(barChart) {
+            LINE_LENGTH = 12;
+        }
 
         float halfWidth = worldWidth * 0.5f;
         float halfHeight = worldHeight * 0.5f;
@@ -359,12 +354,16 @@ public class TactileTile : MonoBehaviour
         //Debug.Log(s);
 
         int HALF_LABEL_BOUNDS_WIDTH = (LABEL_NUMBER_WIDTH * 2 + 6);
+        if(barChart) { 
+            HALF_LABEL_BOUNDS_WIDTH = LABEL_NUMBER_WIDTH * 2 - 3;
+        }
         
         if(AddLetter && s.Length > 2) {
-            HALF_LABEL_BOUNDS_WIDTH = 62;
+            HALF_LABEL_BOUNDS_WIDTH = LABEL_NUMBER_WIDTH * 2 + (LABEL_NUMBER_WIDTH/3);
         } else if(AddLetter && s.Length == 1) {
             HALF_LABEL_BOUNDS_WIDTH = (LABEL_NUMBER_WIDTH + 6);
         }
+
 
         int START_LABEL_HEIGHT = 30;
         int SPACING = 8;
@@ -374,10 +373,23 @@ public class TactileTile : MonoBehaviour
             START_LABEL_HEIGHT = START_LABEL_HEIGHT / 2;
             SPACING = SPACING / 2;
         }
+
+        if(barChart) {
+            SPACING = (SPACING / 3);
+        }
+
+        //Debug.Log(widthPixels);
         //bottom
 		for(int j = 0; j < heightPixels; j++)
         {
-            for(int i = 0; i < widthPixels; i++)
+            int start = 0;
+            int end = widthPixels;
+            if(barChart) {
+                start = widthPixels;
+                end = start+widthPixels;
+            }
+
+            for(int i = start; i < end; i++)
             {
 
                 Color c = Color.white;
@@ -388,7 +400,7 @@ public class TactileTile : MonoBehaviour
 
                     bool bothIn = true;
 
-                    if(i > castingTrisWidth && i < widthPixels - castingTrisWidth)
+                    if(i > castingTrisWidth && i < end - castingTrisWidth)
                     {
                         wIdx = wIdx - castingTrisWidth;
                     } 
@@ -416,20 +428,20 @@ public class TactileTile : MonoBehaviour
                     c = tex.GetPixel(i, j);
                 }
 
-				if(j == 10 && i > 50 && i < widthPixels - 50)
+				if(j == 10 && i > start+LINE_LENGTH && i < end - LINE_LENGTH)
                 {
                     if(!castingOption) {
                         currVert.y = 0.0005f;
                     }
                 }
                 else if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
-                         i >= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH && i < (widthPixels / 2) + HALF_LABEL_BOUNDS_WIDTH)
+                         i >= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH && i < ((start+end) / 2) + HALF_LABEL_BOUNDS_WIDTH)
                 {
                     int hLookup = j - START_LABEL_HEIGHT;
-                    int wLookup = (i - ((widthPixels/2)-HALF_LABEL_BOUNDS_WIDTH));
+                    int wLookup = (i - (((start+end)/2)-HALF_LABEL_BOUNDS_WIDTH));
 
-                    if(i >= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH && 
-                        i < (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + LABEL_NUMBER_WIDTH && 
+                    if(i >= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH && 
+                        i < ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + LABEL_NUMBER_WIDTH && 
                         s.Length > 0)
                     {
                         //1st digit...
@@ -451,8 +463,8 @@ public class TactileTile : MonoBehaviour
                             }
                         }
                     }
-                    else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH + SPACING) && 
-                        i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && 
+                    else if(i > ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH + SPACING) && 
+                        i <= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && 
                         ((s.Length > 1) || (AddLetter && s.Length > 0)))
                     {
                         wLookup -= (LABEL_NUMBER_WIDTH + SPACING+1);
@@ -470,8 +482,8 @@ public class TactileTile : MonoBehaviour
                             currVert.y = 0f;
                         }
                     }
-                    else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2) + SPACING*2 && 
-                        i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && 
+                    else if(i > ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2) + SPACING*2 && 
+                        i <= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && 
                         ((s.Length > 2) || (AddLetter && s.Length > 1)) )
                     {
                         wLookup -= (LABEL_NUMBER_WIDTH*2 + (SPACING*2)+1);
@@ -489,8 +501,8 @@ public class TactileTile : MonoBehaviour
                             currVert.y = 0f;
                         }
                     }
-                    else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3) + SPACING*3 && 
-                        i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*4 + SPACING*3) && 
+                    else if(i > ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3) + SPACING*3 && 
+                        i <= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*4 + SPACING*3) && 
                         (AddLetter && s.Length > 2))
                     {
                         wLookup -= (LABEL_NUMBER_WIDTH*3 + (SPACING*3)+1);
@@ -512,9 +524,12 @@ public class TactileTile : MonoBehaviour
 				    currVert.y = 0f;
                 }
 
-                currVert.x = -halfWidth + (((float)i / ((float)widthPixels-1f)) * worldWidth);
+                //currVert.x = -halfWidth + ((float)(i - start) / ((float)((end-start)-1f)) * worldWidth);
+                currVert.x = -halfWidth + (((float)i - (float)start) * widthIncrement);// * worldWidth);
+
                 currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
-                
+                //currVert.z = -halfHeight + ((float)j * heightIncrement);
+
                 if(makeControl || castingInvert || castingOption) {
                     currVert.y = 0f;
                 }
@@ -523,7 +538,7 @@ public class TactileTile : MonoBehaviour
                 //normals[vertIndex] = Vector3.up;
                 colors[vertIndex] = c;
 
-                if(j < heightPixels-1 && i < widthPixels-1)
+                if(j < heightPixels-1 && i < end-1)
                 {
                     //Debug.Log(j + " " + i + " " + indexIdx);
                     indices[indexIdx] = vertIndex;
@@ -541,7 +556,14 @@ public class TactileTile : MonoBehaviour
 		
         for(int j = 0; j < heightPixels; j++)
         {
-            for(int i = 0; i < widthPixels; i++)
+            int start = 0;
+            int end = widthPixels;
+            if(barChart) {
+                start = widthPixels;
+                end = start+widthPixels;
+            }
+
+            for(int i = start; i < end; i++)
             {
                 Color c = Color.black;
                 bool bothIn = true;
@@ -550,11 +572,11 @@ public class TactileTile : MonoBehaviour
 
                 if(castingOption)
                 {
-                    int wIdx = widthPixels-1-i;
+                    int wIdx = end-1-i;
                     //int wIdx = i;
                     int hIdx = j;
 
-                    if(i > castingTrisWidth && i < widthPixels - castingTrisWidth)
+                    if(i > castingTrisWidth && i < end - castingTrisWidth)
                     {
                         wIdx = wIdx - castingTrisWidth;
                     }
@@ -563,7 +585,7 @@ public class TactileTile : MonoBehaviour
                         bothIn = false;
                         if(addTileBorder) {
                             if(((i >= castingTrisWidth - borderTris) && (i <= castingTrisWidth) || 
-                            (i >= widthPixels - castingTrisWidth) && (i <= (widthPixels - castingTrisWidth + borderTris))) && 
+                            (i >= end - castingTrisWidth) && (i <= (end - castingTrisWidth + borderTris))) && 
                             ((j <= heightPixels - castingTrisWidth + borderTris) && j >= castingTrisWidth - borderTris)) {
                                 onBorder = true;
                             }
@@ -579,8 +601,8 @@ public class TactileTile : MonoBehaviour
                         bothIn = false;
                         if(addTileBorder) {
                             if(((j >= castingTrisWidth - borderTris) && (j <= castingTrisWidth) ||
-                             (j >= heightPixels - castingTrisWidth) && (j <= (widthPixels - castingTrisWidth + borderTris))) &&
-                             ((i <= widthPixels - castingTrisWidth + borderTris) && i >= castingTrisWidth - borderTris)) {
+                             (j >= heightPixels - castingTrisWidth) && (j <= (end - castingTrisWidth + borderTris))) &&
+                             ((i <= end - castingTrisWidth + borderTris) && i >= castingTrisWidth - borderTris)) {
                                 onBorder = true;
                             }
                         }
@@ -590,7 +612,7 @@ public class TactileTile : MonoBehaviour
                     {
                         if(Smooth)
                         {
-                            c = CalcSmoothColor(wIdx, hIdx, widthPixels, heightPixels, SmoothWindow, tex);
+                            c = CalcSmoothColor(wIdx, hIdx, end, heightPixels, SmoothWindow, tex, barChart);
                         }
                         else
                         {
@@ -604,12 +626,12 @@ public class TactileTile : MonoBehaviour
                         if(AddCastingDivets)
                         {
                             if(addCustomDivets) {
-                                if(CalcCastingSphereCustom(i, j, castingTrisWidth, widthPixels, heightPixels, worldWidth, worldHeight, halfWidth, halfHeight, divetOffset, divetRadius, out c.r))
+                                if(CalcCastingSphereCustom(i, j, castingTrisWidth, end, heightPixels, worldWidth, worldHeight, halfWidth, halfHeight, divetOffset, divetRadius, out c.r))
                                 {
                                     c.g = 1f;
                                 }
                             } else {
-                                if(CalcCastingSphere(i, j, widthPixels, heightPixels, castingTrisWidth, sphereWidth, out c.r))
+                                if(CalcCastingSphere(i, j, end, heightPixels, castingTrisWidth, sphereWidth, out c.r))
                                 {
                                     c.g = 1f;
                                 }
@@ -618,13 +640,13 @@ public class TactileTile : MonoBehaviour
 
                         if(!castingInvert) {
                             if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
-                                i >= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH && i < (widthPixels / 2) + HALF_LABEL_BOUNDS_WIDTH)
+                                i >= (end / 2) - HALF_LABEL_BOUNDS_WIDTH && i < (end / 2) + HALF_LABEL_BOUNDS_WIDTH)
                             {
                                 int hLookup = j - START_LABEL_HEIGHT;
-                                int wLookup = (i - ((widthPixels/2)-HALF_LABEL_BOUNDS_WIDTH));
+                                int wLookup = (i - ((end/2)-HALF_LABEL_BOUNDS_WIDTH));
 
-                                if(i >= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH && 
-                                    i < (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + LABEL_NUMBER_WIDTH && 
+                                if(i >= (end / 2) - HALF_LABEL_BOUNDS_WIDTH && 
+                                    i < (end / 2) - HALF_LABEL_BOUNDS_WIDTH + LABEL_NUMBER_WIDTH && 
                                     s.Length > 0)
                                 {
                                     if(wLookup <= (LABEL_NUMBER_WIDTH/2)) {
@@ -645,8 +667,8 @@ public class TactileTile : MonoBehaviour
                                     } 
                                     
                                 }
-                                else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH + SPACING) && 
-                                    i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && 
+                                else if(i > (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH + SPACING) && 
+                                    i <= (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && 
                                     ((s.Length > 1) || (AddLetter && s.Length > 0)))
                                 {
                                     wLookup -= (LABEL_NUMBER_WIDTH + SPACING+1);
@@ -675,8 +697,8 @@ public class TactileTile : MonoBehaviour
 
 
                                 }
-                                else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2) + SPACING*2 && 
-                                    i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && 
+                                else if(i > (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2) + SPACING*2 && 
+                                    i <= (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && 
                                     ((s.Length > 2) || (AddLetter && s.Length > 1)) )
                                 {
                                     wLookup -= (LABEL_NUMBER_WIDTH*2 + (SPACING*2)+1);
@@ -705,8 +727,8 @@ public class TactileTile : MonoBehaviour
 
 
                                 }
-                                else if(i > (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3) + SPACING*3 && 
-                                    i <= (widthPixels / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*4 + SPACING*3) && 
+                                else if(i > (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3) + SPACING*3 && 
+                                    i <= (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*4 + SPACING*3) && 
                                     (AddLetter && s.Length > 2))
                                 {
                                     wLookup -= (LABEL_NUMBER_WIDTH*3 + (SPACING*3)+1);
@@ -736,7 +758,7 @@ public class TactileTile : MonoBehaviour
                 {
                     if(Smooth)
                     {
-                        c = CalcSmoothColor(i, j, widthPixels, heightPixels, SmoothWindow, tex);
+                        c = CalcSmoothColor(i, j, end, heightPixels, SmoothWindow, tex, barChart);
                     }
                     else
                     {
@@ -830,14 +852,16 @@ public class TactileTile : MonoBehaviour
                     }
                 }
 
-                currVert.x = -halfWidth + (((float)i / ((float)widthPixels-1f)) * worldWidth);
+                //currVert.x = -halfWidth + (((float)(i - start) / ((float)(end-start)-1f)) * worldWidth);
+
+                currVert.x = -halfWidth + (((float)i - start) * widthIncrement);// * worldWidth);
                 currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
-                
+                //currVert.z = -halfHeight + ((float)j * heightIncrement);
                 verts[vertIndex] = currVert;
                 //normals[vertIndex] = Vector3.up;
                 colors[vertIndex] = c;
 
-                if(j < heightPixels-1 && i < widthPixels-1)
+                if(j < heightPixels-1 && i < end-1)
                 {
                     //Debug.Log(j + " " + i + " " + indexIdx);
                     indices[indexIdx] = vertIndex;
@@ -1058,7 +1082,7 @@ public class TactileTile : MonoBehaviour
         return false;
     }
 
-    Color CalcSmoothColor(int i, int j, int widthPixels, int heightPixels, int SmoothWindow, Texture2D tex)
+    Color CalcSmoothColor(int i, int j, int widthPixels, int heightPixels, int SmoothWindow, Texture2D tex, bool barChart=false)
     {
         Color c = Color.black;
         Color heightSum = Color.black;
@@ -1079,7 +1103,7 @@ public class TactileTile : MonoBehaviour
                     hIdx = 0;
                 }
 
-                if(wIdx > widthPixels-1)
+                if(wIdx > widthPixels-1 && !barChart)
                 {
                     wIdx = widthPixels-1;
                 }
