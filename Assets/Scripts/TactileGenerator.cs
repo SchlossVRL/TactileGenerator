@@ -32,10 +32,6 @@ public class TactileGenerator : MonoBehaviour
     float TileSize;
 
     [SerializeField]
-    [Tooltip("The height underneath when creating a casting mold. In meters.")]
-    float CastingBase;
-
-    [SerializeField]
     [Tooltip("Whether to invert the values of the texture to black high, white low.")]
     bool Invert;
 
@@ -52,46 +48,63 @@ public class TactileGenerator : MonoBehaviour
     bool CastingOption;
 
     [SerializeField]
+    [Tooltip("The height underneath when creating a casting mold. In meters.")]
+    float CastingBase;
+
+    [SerializeField]
+    [Tooltip("Make the inverted cover for casting.")]
     bool CastingInvert;
 
     [SerializeField]
+    [Tooltip("The size in meters of the casting border.")]
     float CastingBorderSize;
 
     //[SerializeField]
     bool AddCastingDivets;
 
     [SerializeField]
+    [Tooltip("Whether we smooth (low-pass filter) the texture data before generating the height map.")]
     bool Smooth;
 
     [SerializeField]
+    [Tooltip("The size of the low-pass filter window when smoothing.")]
     int SmoothWindow;
 
     [SerializeField]
+    [Tooltip("Whether we should prefix a letter in front of the brodatz texture number on the back side engraving.")]
     bool AddLetter;
 
     [SerializeField]
+    [Tooltip("Which letter we should add - currently can choose from ")]
     char Letter;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     [SerializeField]
+    [Tooltip("Force this tile to be the control version of it (no height change) ")]
     bool MakeControl;
 
     [SerializeField]
+    [Tooltip("Special case for silicone tiles")]
     bool DoSilicone;
 
     [SerializeField]
+    [Tooltip("Whether to place a border around the height map, this is a custom setting for fleece tiles so that the fleece can fit better")]
     bool AddBorder;
 
     [SerializeField]
+    [Tooltip("The width in triangles of the border if AddBorder is checked")]
     int NumBorderTriangles;
 
     [SerializeField]
+    [Tooltip("An option for casting-based tiles where divets can be placed in a custom location, as opposed to the default half inch in from corners with 1/4 inch radius")]
     bool AddCustomDivets;
 
     [SerializeField]
+    [Tooltip("The offset in from the corners for custom divets.")]
     float DivetOffset;
 
     [SerializeField]
+    [Tooltip("The radius of the divet, when customized")]
     float DivetRadius;
 
     void Start()

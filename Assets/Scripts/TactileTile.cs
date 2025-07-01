@@ -294,15 +294,10 @@ public class TactileTile : MonoBehaviour
             widthPixels = widthPixels / 2;
         }
 
+        int originalPixelWidth = widthPixels / 3;
+
         float widthIncrement = worldWidth / (float)widthPixels;
         float heightIncrement = worldHeight / (float)heightPixels;
-
-        if(barChart) {
-            widthIncrement = (worldWidth / ((float)(widthPixels-1f))) * 3f;// * 0.3333333f;
-            widthPixels /= 3;
-            
-            //widthPixels = widthPixels+1;
-        }
 
         int castingTrisWidth = 0;
         float sphereWidth = 0;
@@ -310,8 +305,15 @@ public class TactileTile : MonoBehaviour
         if(castingOption)
         {
             //base number of additional triangles on texture size...
+            if(barChart) 
+            {
+                widthIncrement = (worldWidth / ((float)(widthPixels-1f))) * 3f;
+                widthPixels /= 3;
+            }
+
             castingTrisWidth = (int)((float)(castingBorderSize / worldWidth) * (float)widthPixels);
-            //Debug.Log(castingTrisWidth);
+            
+            Debug.Log(castingTrisWidth);
             sphereWidth = (castingTrisWidth / 4.0f);    //3.8f
             //Debug.Log(castingTrisWidth);
 
@@ -320,8 +322,21 @@ public class TactileTile : MonoBehaviour
             
             worldWidth += (2 * castingBorderSize);
             worldHeight += (2 * castingBorderSize);
+            
         }
+        else
+        {
+            if(barChart) 
+            {
+                widthIncrement = (worldWidth / ((float)(widthPixels-1f))) * 3f;// * 0.3333333f;
+                widthPixels /= 3;
+                
+                //for bar chart casting we want to sample the middle 1/3 of the texture, but also add border triangles...
 
+                //widthPixels = widthPixels+1;
+            }
+        }
+        
         int BASE_VERT_OFFSET = widthPixels * heightPixels;// * 2;
         //int BASE_INDEX_OFFSET = tex.width * 12 + tex.height * 12;
 
@@ -384,9 +399,15 @@ public class TactileTile : MonoBehaviour
         {
             int start = 0;
             int end = widthPixels;
-            if(barChart) {
-                start = widthPixels;
-                end = start+widthPixels;
+            if (barChart)
+            {
+                if (!castingOption)
+                {
+                    start = widthPixels;
+                    end = start + widthPixels;
+                }
+                    //start = widthPixels - castingTrisWidth;
+                    //end = start + castingTrisWidth * 2 + widthPixels
             }
 
             for(int i = start; i < end; i++)
@@ -400,16 +421,16 @@ public class TactileTile : MonoBehaviour
 
                     bool bothIn = true;
 
-                    if(i > castingTrisWidth && i < end - castingTrisWidth)
+                    if (i > castingTrisWidth && i < end - castingTrisWidth)
                     {
                         wIdx = wIdx - castingTrisWidth;
-                    } 
+                    }
                     else
                     {
                         bothIn = false;
                     }
 
-                    if(j > castingTrisWidth && j < heightPixels - castingTrisWidth)
+                    if (j > castingTrisWidth && j < heightPixels - castingTrisWidth)
                     {
                         hIdx = hIdx - castingTrisWidth;
                     }
@@ -417,8 +438,8 @@ public class TactileTile : MonoBehaviour
                     {
                         bothIn = false;
                     }
-
-                    if(bothIn)
+                    
+                    if (bothIn)
                     {
                         c = tex.GetPixel(wIdx, hIdx);
                     }
@@ -559,8 +580,11 @@ public class TactileTile : MonoBehaviour
             int start = 0;
             int end = widthPixels;
             if(barChart) {
-                start = widthPixels;
-                end = start+widthPixels;
+                if(!castingOption)
+                {
+                    start = widthPixels;
+                    end = start+widthPixels;
+                }
             }
 
             for(int i = start; i < end; i++)
@@ -579,6 +603,12 @@ public class TactileTile : MonoBehaviour
                     if(i > castingTrisWidth && i < end - castingTrisWidth)
                     {
                         wIdx = wIdx - castingTrisWidth;
+                        if(barChart)
+                        {
+                            //want to sample from the middle of the original texture...
+
+                            wIdx += originalPixelWidth;
+                        }
                     }
                     else
                     {
@@ -857,6 +887,11 @@ public class TactileTile : MonoBehaviour
                 currVert.x = -halfWidth + (((float)i - start) * widthIncrement);// * worldWidth);
                 currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
                 //currVert.z = -halfHeight + ((float)j * heightIncrement);
+                if (vertIndex == verts.Length)
+                {
+                    Debug.Log(verts.Length);
+                }
+
                 verts[vertIndex] = currVert;
                 //normals[vertIndex] = Vector3.up;
                 colors[vertIndex] = c;
