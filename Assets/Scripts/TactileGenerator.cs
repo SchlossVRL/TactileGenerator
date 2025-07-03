@@ -54,7 +54,9 @@ public class TactileGenerator : MonoBehaviour
     [SerializeField]
     [Tooltip("Make the inverted cover for casting.")]
     bool CastingInvert;
-
+    [SerializeField]
+    [Tooltip("Make a 2 mm hole in the inverted casting piece")]
+    bool CastingHole;
     [SerializeField]
     [Tooltip("The size in meters of the casting border.")]
     float CastingBorderSize;
@@ -141,7 +143,7 @@ public class TactileGenerator : MonoBehaviour
             ipc.GenerateTile(TestTexture, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
                 CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                 AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
-                DivetOffset, DivetRadius, BarChart);
+                DivetOffset, DivetRadius, BarChart, CastingHole);
         }
         else
         {
@@ -189,7 +191,7 @@ public class TactileGenerator : MonoBehaviour
                     ipc.GenerateTile(colorTex, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
                         CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                         AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
-                        DivetOffset, DivetRadius, BarChart);
+                        DivetOffset, DivetRadius, BarChart, CastingHole);
 
                     ipc.gameObject.SetActive(false);
                     //UnityEngine.Object.DestroyImmediate(colorTex);

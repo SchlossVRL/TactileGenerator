@@ -281,7 +281,7 @@ public class TactileTile : MonoBehaviour
         float tileSize, bool invert, bool scaleQuarter=false,  bool castingOption=false, 
         float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
         bool makeControl=false, bool doSilicone=false, float castingBase=0.002f, bool addTileBorder=false, int borderTris=0, bool addCustomDivets=false, float divetOffset=0f,
-        float divetRadius = 0f, bool barChart=false )
+        float divetRadius = 0f, bool barChart=false, bool castingHole = false )
     {
         InitializeLookup();
 
@@ -300,6 +300,7 @@ public class TactileTile : MonoBehaviour
         float heightIncrement = worldHeight / (float)heightPixels;
 
         int castingTrisWidth = 0;
+        int castingTrisHeight = 0;
         float sphereWidth = 0;
 
         if(castingOption)
@@ -312,6 +313,7 @@ public class TactileTile : MonoBehaviour
             }
 
             castingTrisWidth = (int)((float)(castingBorderSize / worldWidth) * (float)widthPixels);
+            castingTrisHeight = (int)((float)(castingBorderSize / worldHeight) * (float)heightPixels);
             
             Debug.Log(castingTrisWidth);
             sphereWidth = (castingTrisWidth / 4.0f);    //3.8f
@@ -616,22 +618,22 @@ public class TactileTile : MonoBehaviour
                         if(addTileBorder) {
                             if(((i >= castingTrisWidth - borderTris) && (i <= castingTrisWidth) || 
                             (i >= end - castingTrisWidth) && (i <= (end - castingTrisWidth + borderTris))) && 
-                            ((j <= heightPixels - castingTrisWidth + borderTris) && j >= castingTrisWidth - borderTris)) {
+                            ((j <= heightPixels - castingTrisHeight + borderTris) && j >= castingTrisHeight - borderTris)) {
                                 onBorder = true;
                             }
                         }
                     }
 
-                    if(j > castingTrisWidth && j < heightPixels - castingTrisWidth)
+                    if(j > castingTrisHeight && j < heightPixels - castingTrisHeight)
                     {
-                        hIdx = hIdx - castingTrisWidth;
+                        hIdx = hIdx - castingTrisHeight;
                     }
                     else
                     {
                         bothIn = false;
                         if(addTileBorder) {
-                            if(((j >= castingTrisWidth - borderTris) && (j <= castingTrisWidth) ||
-                             (j >= heightPixels - castingTrisWidth) && (j <= (end - castingTrisWidth + borderTris))) &&
+                            if(((j >= castingTrisHeight - borderTris) && (j <= castingTrisHeight) ||
+                             (j >= heightPixels - castingTrisHeight) && (j <= (heightPixels - castingTrisHeight + borderTris))) &&
                              ((i <= end - castingTrisWidth + borderTris) && i >= castingTrisWidth - borderTris)) {
                                 onBorder = true;
                             }
@@ -656,7 +658,8 @@ public class TactileTile : MonoBehaviour
                         if(AddCastingDivets)
                         {
                             if(addCustomDivets) {
-                                if(CalcCastingSphereCustom(i, j, castingTrisWidth, end, heightPixels, worldWidth, worldHeight, halfWidth, halfHeight, divetOffset, divetRadius, out c.r))
+                                if(CalcCastingSphereCustom(i, j, castingTrisWidth, end, heightPixels, worldWidth, worldHeight, 
+                                    halfWidth, halfHeight, divetOffset, divetRadius, out c.r))
                                 {
                                     c.g = 1f;
                                 }
