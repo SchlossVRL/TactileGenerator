@@ -791,11 +791,35 @@ public class TactileTile : MonoBehaviour
                 {
                     if(Smooth)
                     {
-                        c = CalcSmoothColor(i, j, end, heightPixels, SmoothWindow, tex, barChart);
+                        int wIdx = i;
+                        if (invert)
+                        {
+                            wIdx = end - 1 - i;
+                            if (barChart)
+                            {
+                                //want to sample from the middle of the original texture...
+
+                                wIdx += originalPixelWidth;
+                            }
+                        }
+                        
+                        c = CalcSmoothColor(wIdx, j, end, heightPixels, SmoothWindow, tex, barChart);
                     }
                     else
                     {
-                        c = tex.GetPixel(i, j);
+                        int wIdx = i;
+                        if (invert)
+                        {
+                            wIdx = end - 1 - i;
+                            if (barChart)
+                            {
+                                //want to sample from the middle of the original texture...
+
+                                wIdx += originalPixelWidth;
+                            }
+                        }
+
+                        c = tex.GetPixel(wIdx, j);
                     }
                 }
 
@@ -890,10 +914,10 @@ public class TactileTile : MonoBehaviour
                 currVert.x = -halfWidth + (((float)i - start) * widthIncrement);// * worldWidth);
                 currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
                 //currVert.z = -halfHeight + ((float)j * heightIncrement);
-                if (vertIndex == verts.Length)
+                /*if (vertIndex == verts.Length)
                 {
                     Debug.Log(verts.Length);
-                }
+                }*/
 
                 verts[vertIndex] = currVert;
                 //normals[vertIndex] = Vector3.up;
