@@ -554,7 +554,9 @@ public class TactileTile : MonoBehaviour
                 //currVert.z = -halfHeight + ((float)j * heightIncrement);
 
                 if(makeControl || castingInvert || castingOption) {
-                    currVert.y = 0f;
+                    if(!AddLetter) {
+                        currVert.y = 0f;
+                    }
                 }
 
                 verts[vertIndex] = currVert;
