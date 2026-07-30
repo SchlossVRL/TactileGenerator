@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TilePrefab: {fileID: 5997940118473086424, guid: a63266da3fbbb495c9237e2b60aeb0f6, type: 3}
   TextureDir: brodatz
-  TestTexture: {fileID: 2800000, guid: 879cbcd9709e446f2b1cc272962501cc, type: 3}
+  TestTexture: {fileID: 2800000, guid: 4c6c2109ef3d4437a842490005f3758f, type: 3}
   WorldWidth: 0.016915
   WorldLength: 0.050546
   BaseSize: 0.002
@@ -57,11 +57,12 @@ MonoBehaviour:
   CastingOption: 1
   CastingBase: 0.00275
   CastingInvert: 0
+  CastingHole: 0
   CastingBorderSize: 0.0127
   Smooth: 1
   SmoothWindow: 4
   AddLetter: 1
-  Letter: 115
+  Letter: 102
   MakeControl: 0
   DoSilicone: 1
   AddBorder: 0
