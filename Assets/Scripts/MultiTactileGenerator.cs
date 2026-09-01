@@ -130,13 +130,46 @@ public class MultiTactileGenerator : MonoBehaviour
                 AddCastingDivets = true;
             }
             
-            ipc.GenerateMultiTile(TestTexture, MultiTest, WorldWidth, WorldLength, BaseSize, TileSize, Invert, ScaleQuarter, 
+            ipc.GenerateMultiTile(TestTexture, MultiTest, WorldWidth, WorldLength, BaseSize, TileSize, Invert, Color.black, ScaleQuarter, 
                 CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                 AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
                 DivetOffset, DivetRadius, BarChart, CastingHole);
         }
     }
 
+    [ContextMenu("GenerateMultiObject")]
+    void GenerateMultiObject()
+    {
+        if(TestTexture != null && MultiTest != null)
+        {
+            string t = MultiTest.text;
+            string[] lineSeparators = new string[] { "\r\n", "\n" };
+            string[] lines = t.Split(lineSeparators, System.StringSplitOptions.None);
+
+            int numObjects = lines.Length;
+            Color32[] colorLookup = new Color32[numObjects];
+
+            for(int i = 0; i < numObjects; ++i)
+            {
+                string[] vals = lines[i].Split(',');
+                string numString = vals[3].Substring(1,vals[3].Length-1);
+                colorLookup[i] = new Color32((byte)int.Parse(vals[0]), (byte)int.Parse(vals[1]), (byte)int.Parse(vals[2]), 255);
+
+                GameObject ip = Instantiate(TilePrefab);
+
+                MultiTactileTile ipc = ip.GetComponent<MultiTactileTile>();
+                
+                if(CastingOption) {
+                    AddCastingDivets = true;
+                }
+                
+                ipc.GenerateMultiTile(TestTexture, MultiTest, WorldWidth, WorldLength, BaseSize, TileSize, Invert, colorLookup[i], ScaleQuarter, 
+                    CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
+                    AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
+                    DivetOffset, DivetRadius, BarChart, CastingHole, true);
+            }
+        }
+    }
 
     [ContextMenu("Generate")]
     void Generate()

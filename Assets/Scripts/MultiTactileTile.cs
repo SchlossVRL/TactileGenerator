@@ -18,6 +18,24 @@ public class MultiTactileTile : MonoBehaviour
 
     static int[,] GLookup = new int[LABEL_NUMBER_WIDTH, LABEL_NUMBER_HEIGHT];
 
+    [SerializeField]
+    GameObject CutObject;
+
+    [SerializeField]
+    GameObject TilePrefab;
+
+    [SerializeField]
+    Texture2D matchTexture;
+
+    [SerializeField]
+    int colorMatchIndex;
+
+    [SerializeField]
+    float _tolerance;
+
+    [SerializeField]
+    TextAsset colorMatches;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -277,22 +295,415 @@ public class MultiTactileTile : MonoBehaviour
         return false;
     }
 
+    [ContextMenu("CutBase")]
+    void CutBase()
+    {
+        int newVertCount = 0;
+        int newTriCount = 0;
+        
+        Bounds b = CutObject.GetComponent<MeshRenderer>().bounds;
+
+        Mesh thisM = GetComponent<MeshFilter>().sharedMesh;
+
+        Vector3 [] verts = thisM.vertices;
+        int [] indices = thisM.triangles;
+
+        Vector3 bMax = b.max;
+
+        Vector3 vCenterBounds = b.center;
+        vCenterBounds.y += (b.extents.y + 0.001f);
+
+        string t = colorMatches.text;
+        string[] lineSeparators = new string[] { "\r\n", "\n" };
+        string[] lines = t.Split(lineSeparators, System.StringSplitOptions.None);
+
+        int numObjects = lines.Length;
+        Color32[] colorLookup = new Color32[numObjects];
+
+        for(int i = 0; i < numObjects; ++i)
+        {
+            string[] vals = lines[i].Split(',');
+            string numString = vals[3].Substring(1,vals[3].Length-1);
+            colorLookup[i] = new Color32((byte)int.Parse(vals[0]), (byte)int.Parse(vals[1]), (byte)int.Parse(vals[2]), 255);
+        }
+        
+        for(int i = 0; i < indices.Length; i+=3)
+        {
+            int numAbove = 0;
+
+            int index1 = indices[i];
+            int index2 = indices[i+1];
+            int index3 = indices[i+2];
+
+            int i1x = indices[i] % matchTexture.width;
+            int i1y = indices[i] / matchTexture.width;
+
+            int i2x = indices[i+1] % matchTexture.width;
+            int i2y = indices[i+1] / matchTexture.width;
+
+            int i3x = indices[i+2] % matchTexture.width;
+            int i3y = indices[i+2] / matchTexture.width;
+
+            Color m1 = matchTexture.GetPixel(i1x, i1y);
+            Color m2 = matchTexture.GetPixel(i2x, i2y);
+            Color m3 = matchTexture.GetPixel(i3x, i3y);
+            
+            Vector4 d1 = m1;
+            Vector4 d2 = m2;
+            Vector4 d3 = m3;
+
+            int matchIndex1 = -1;
+            int matchIndex2 = -1;
+            int matchIndex3 = -1;
+
+            float minMatchDist1 = 9999f;
+            float minMatchDist2 = 9999f;
+            float minMatchDist3 = 9999f;
+
+            for(int p = 0; p < colorLookup.Length; ++p)
+            {
+                float dist1 = Vector4.Distance(d1, (Color)colorLookup[p]);
+                if(dist1 < minMatchDist1)
+                {
+                    minMatchDist1 = dist1;
+                    matchIndex1 = p;
+                }
+
+                float dist2 = Vector4.Distance(d2, (Color)colorLookup[p]);
+                if(dist2 < minMatchDist2)
+                {
+                    minMatchDist2 = dist2;
+                    matchIndex2 = p;
+                }
+
+                float dist3 = Vector4.Distance(d3, (Color)colorLookup[p]);
+                if(dist3 < minMatchDist3)
+                {
+                    minMatchDist3 = dist3;
+                    matchIndex3 = p;
+                }
+            }
+
+            Vector3 v1 = verts[indices[i]];
+            Vector3 v2 = verts[indices[i+1]];
+            Vector3 v3 = verts[indices[i+2]];
+
+            if(matchIndex1 == colorMatchIndex)
+            //if(dist1 < _tolerance)
+            //if(v1.y > bMax.y)
+            {
+                numAbove++;
+            }
+
+            if(matchIndex2 == colorMatchIndex)
+            //if(dist2 < _tolerance)
+            //if(v2.y > bMax.y)
+            {
+                numAbove++;
+            }
+
+            if(matchIndex3 == colorMatchIndex)
+            //if(dist3 < _tolerance)
+            //if(v3.y > bMax.y)
+            {
+                numAbove++;
+            }
+
+            if(matchIndex1 == colorMatchIndex || matchIndex2 == colorMatchIndex || matchIndex3 == colorMatchIndex)
+            //if(dist1 < _tolerance || dist2 < _tolerance || dist3 < _tolerance)
+            //if(v1.y > bMax.y || v2.y > bMax.y || v3.y > bMax.y)
+            {
+
+                if(numAbove < 4)
+                {
+                    if(numAbove == 1 || numAbove == 2)
+                    {
+                        newTriCount+=3;
+                        newVertCount+=3;
+                    }
+                    else
+                    {
+                        newTriCount+=6;
+                        newVertCount+=6;
+                    }
+                }
+            }
+        }
+
+        Vector3[] newVertices = new Vector3[newVertCount];
+        int[] newIndices = new int[newTriCount];
+        Color[] newColors = new Color[newVertCount];
+
+        Color c = Color.white;
+        
+        int iIndex = 0;
+        int vCount = 0;
+
+        for(int i = 0; i < indices.Length; i+=3)
+        {
+            int numAbove = 0;
+
+            int index1 = indices[i];
+            int index2 = indices[i+1];
+            int index3 = indices[i+2];
+
+            int i1x = indices[i] % matchTexture.width;
+            int i1y = indices[i] / matchTexture.width;
+
+            int i2x = indices[i+1] % matchTexture.width;
+            int i2y = indices[i+1] / matchTexture.width;
+
+            int i3x = indices[i+2] % matchTexture.width;
+            int i3y = indices[i+2] / matchTexture.width;
+
+            Color m1 = matchTexture.GetPixel(i1x, i1y);
+            Color m2 = matchTexture.GetPixel(i2x, i2y);
+            Color m3 = matchTexture.GetPixel(i3x, i3y);
+            
+            Vector4 d1 = m1;
+            Vector4 d2 = m2;
+            Vector4 d3 = m3;
+
+            int matchIndex1 = -1;
+            int matchIndex2 = -1;
+            int matchIndex3 = -1;
+
+            float minMatchDist1 = 9999f;
+            float minMatchDist2 = 9999f;
+            float minMatchDist3 = 9999f;
+
+            for(int p = 0; p < colorLookup.Length; ++p)
+            {
+                float dist1 = Vector4.Distance(d1, (Color)colorLookup[p]);
+                if(dist1 < minMatchDist1)
+                {
+                    minMatchDist1 = dist1;
+                    matchIndex1 = p;
+                }
+
+                float dist2 = Vector4.Distance(d2, (Color)colorLookup[p]);
+                if(dist2 < minMatchDist2)
+                {
+                    minMatchDist2 = dist2;
+                    matchIndex2 = p;
+                }
+
+                float dist3 = Vector4.Distance(d3, (Color)colorLookup[p]);
+                if(dist3 < minMatchDist3)
+                {
+                    minMatchDist3 = dist3;
+                    matchIndex3 = p;
+                }
+            }
+            
+            //instead of relaying on the tolerance check, check if any color is closest to the match, vs. other colors...
+
+
+            Vector3 v1 = verts[indices[i]];
+            Vector3 v2 = verts[indices[i+1]];
+            Vector3 v3 = verts[indices[i+2]];
+            
+            if(matchIndex1 == colorMatchIndex)
+            //if(v1.y > bMax.y)
+            //if(dist1 < _tolerance)
+            {
+                numAbove++;
+            }
+
+            if(matchIndex2 == colorMatchIndex)
+            //if(v2.y > bMax.y)
+            //if(dist2 < _tolerance)
+            {
+                numAbove++;
+            }
+
+            if(matchIndex3 == colorMatchIndex)
+            //if(dist3 < _tolerance)
+            //if(v3.y > bMax.y)
+            {
+                numAbove++;
+            }
+
+            if(matchIndex1 == colorMatchIndex || matchIndex2 == colorMatchIndex || matchIndex3 == colorMatchIndex)
+            //if(dist1 < _tolerance || dist2 < _tolerance || dist3 < _tolerance)
+            //if(v1.y > bMax.y || v2.y > bMax.y || v3.y > bMax.y)
+            {
+                Vector3 v1New = v1;
+                v1New.y = 0f;
+                Vector3 v2New = v2;
+                v2New.y = 0f;
+                Vector3 v3New = v3;
+                v3New.y = 0f;
+
+                if(numAbove < 4)
+                {
+                    if(numAbove == 1)
+                    {
+                        if(matchIndex1 == colorMatchIndex)
+                        //if(dist1 < _tolerance)
+                        //if(v1.y > bMax.y)
+                        {
+                            newVertices[vCount] = v1;
+                            newVertices[vCount+1] = v2New;
+                            newVertices[vCount+2] = v3New;
+                        }
+                        else if(matchIndex2 == colorMatchIndex)
+                        //else if(dist2 < _tolerance)
+                        //else if(v2.y > bMax.y)
+                        {
+                            newVertices[vCount] = v1New;
+                            newVertices[vCount+1] = v2;
+                            newVertices[vCount+2] = v3New;            
+                        }
+                        else if(matchIndex3 == colorMatchIndex)
+                        //else if(dist3 < _tolerance)
+                        //else if(v3.y > bMax.y)
+                        {
+                            newVertices[vCount] = v1New;
+                            newVertices[vCount+1] = v2New;
+                            newVertices[vCount+2] = v3;   
+                        }
+
+                        newColors[vCount] = c;
+                        newColors[vCount+1] = c;
+                        newColors[vCount+2] = c;
+
+                        newIndices[iIndex] = iIndex;
+                        newIndices[iIndex+1] = iIndex+1;
+                        newIndices[iIndex+2] = iIndex+2;
+
+                        iIndex+=3;
+                        vCount+=3;
+                    }
+                    else if(numAbove == 2)
+                    {
+                        if(matchIndex1 == colorMatchIndex && matchIndex2 == colorMatchIndex)
+                        //if(dist1 < _tolerance && dist2 < _tolerance)
+                        //if(v1.y > bMax.y && v2.y > bMax.y)
+                        {
+                            newVertices[vCount] = v1;
+                            newVertices[vCount+1] = v2;
+                            newVertices[vCount+2] = v3New;
+                        }
+                        else if(matchIndex2 == colorMatchIndex && matchIndex3 == colorMatchIndex)
+                        //else if(dist2 < _tolerance && dist3 < _tolerance)
+                        //else if(v2.y > bMax.y && v3.y > bMax.y)
+                        {
+                            newVertices[vCount] = v1New;
+                            newVertices[vCount+1] = v2;
+                            newVertices[vCount+2] = v3;
+                        }
+                        else if(matchIndex3 == colorMatchIndex && matchIndex1 == colorMatchIndex)
+                        //else if(dist3 < _tolerance && dist1 < _tolerance)
+                        //else if(v3.y > bMax.y && v1.y > bMax.y)
+                        {
+                            newVertices[vCount] = v1;
+                            newVertices[vCount+1] = v2New;
+                            newVertices[vCount+2] = v3;
+                        }
+
+                        newColors[vCount] = c;
+                        newColors[vCount+1] = c;
+                        newColors[vCount+2] = c;
+
+                        newIndices[iIndex] = iIndex;
+                        newIndices[iIndex+1] = iIndex+1;
+                        newIndices[iIndex+2] = iIndex+2;
+
+                        iIndex+=3;
+                        vCount+=3;
+                    }
+                    else if(numAbove == 3)
+                    {
+                        newVertices[vCount] = v1;
+                        newVertices[vCount+1] = v2;
+                        newVertices[vCount+2] = v3;
+
+                        /*Vector3 vNorm1 = Vector3.Normalize(v2-v1);
+                        Vector3 vNorm2 = Vector3.Normalize(v2-v3);
+
+                        Vector3 vCross = Vector3.Cross(vNorm1, vNorm2);
+                        Vector3 vToMid = Vector3.up;//Vector3.Normalize(vCenterBounds - v2);
+
+                        if(Vector3.Dot(vCross, vToMid) < 0f)
+                        {
+                            newVertices[vCount] = v1;
+                            newVertices[vCount+1] = v3;
+                            newVertices[vCount+2] = v2;
+                        }
+                        else
+                        {
+                            newVertices[vCount] = v1;
+                            newVertices[vCount+1] = v2;
+                            newVertices[vCount+2] = v3;
+                        }*/
+
+                        newVertices[vCount+3] = v1New;
+                        newVertices[vCount+4] = v2New;
+                        newVertices[vCount+5] = v3New;
+
+                        newIndices[iIndex] = iIndex;
+                        newIndices[iIndex+1] = iIndex+1;
+                        newIndices[iIndex+2] = iIndex+2;
+                        newIndices[iIndex+3] = iIndex+3;
+                        newIndices[iIndex+4] = iIndex+4;
+                        newIndices[iIndex+5] = iIndex+5;
+
+                        newColors[vCount] = c;
+                        newColors[vCount+1] = c;
+                        newColors[vCount+2] = c;
+                        newColors[vCount+3] = c;
+                        newColors[vCount+4] = c;
+                        newColors[vCount+5] = c;
+
+                        iIndex+=6;
+                        vCount+=6;  
+                    }
+
+
+
+                }
+            }
+        }
+
+        if(TilePrefab != null)
+        {
+            GameObject newTile = Instantiate(TilePrefab);
+            MeshFilter m = newTile.GetComponent<MeshFilter>();
+            Mesh newMesh = new Mesh();
+            m.sharedMesh = newMesh;
+            newMesh.name = "test";
+            if(m != null)
+            {
+                newMesh.vertices = newVertices;
+                newMesh.colors = newColors;
+                //newMesh.normals = normals;
+                newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                newMesh.SetIndices(newIndices, MeshTopology.Triangles, 0, false);
+                newMesh.RecalculateNormals();
+                newMesh.RecalculateTangents();
+                newMesh.UploadMeshData(true);
+            }
+        }
+
+    }
+
     public void GenerateMultiTile(Texture2D tex, TextAsset textAsset, float worldWidth, float worldHeight, float baseSize,
-        float tileSize, bool invert, bool scaleQuarter=false, bool castingOption=false, 
+        float tileSize, bool invert, Color32 matchColor, bool scaleQuarter=false, bool castingOption=false, 
         float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
         bool makeControl=false, bool doSilicone=false, float castingBase=0.002f, bool addTileBorder=false, int borderTris=0, bool addCustomDivets=false, float divetOffset=0f,
-        float divetRadius = 0f, bool barChart=false, bool castingHole = false) 
+        float divetRadius = 0f, bool barChart=false, bool castingHole = false, bool doColorMatch=false) 
     {
         InitializeLookup();
 
         int heightPixels = tex.height;
         int widthPixels = tex.width;
 
-        if(scaleQuarter)
+        /*if(scaleQuarter)
         {
             heightPixels = heightPixels / 2;
             widthPixels = widthPixels / 2;
-        }
+        }*/
 
         string t = textAsset.text;
         string[] lineSeparators = new string[] { "\r\n", "\n" };
@@ -481,10 +892,10 @@ public class MultiTactileTile : MonoBehaviour
                 if(j == 10 && i > start+LINE_LENGTH && i < end - LINE_LENGTH)
                 {
                     if(!castingOption) {
-                        currVert.y = 0.0005f;
+                        currVert.y = 0f;// 0.0005f; //old underline
                     }
                 }
-                else if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
+                /*else if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
                          i >= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH && i < ((start+end) / 2) + HALF_LABEL_BOUNDS_WIDTH)
                 {
                     int hLookup = j - START_LABEL_HEIGHT;
@@ -568,7 +979,7 @@ public class MultiTactileTile : MonoBehaviour
                         currVert.y = 0f;
                     }
 
-                }
+                }*/
                 else
                 {
 				    currVert.y = 0f;
@@ -701,7 +1112,7 @@ public class MultiTactileTile : MonoBehaviour
                         }
 
                         if(!castingInvert) {
-                            if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
+                            /*if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
                                 i >= (end / 2) - HALF_LABEL_BOUNDS_WIDTH && i < (end / 2) + HALF_LABEL_BOUNDS_WIDTH)
                             {
                                 int hLookup = j - START_LABEL_HEIGHT;
@@ -812,7 +1223,7 @@ public class MultiTactileTile : MonoBehaviour
                                     //    numberArea = true;
                                     //} 
                                 }
-                            }
+                            }*/
                         }
                     }
                 }
@@ -821,6 +1232,7 @@ public class MultiTactileTile : MonoBehaviour
                     if(Smooth)
                     {
                         int wIdx = i;
+                        int hIdx = j;
                         if (invert)
                         {
                             wIdx = end - 1 - i;
@@ -832,7 +1244,138 @@ public class MultiTactileTile : MonoBehaviour
                             }
                         }
                         
-                        c = CalcSmoothColor(wIdx, j, end, heightPixels, SmoothWindow, tex, barChart);
+                        //c = CalcSmoothColor(wIdx, j, end, heightPixels, SmoothWindow, tex, barChart);
+                        c = Color.black;
+
+                        Color heightSum = Color.black;
+                        for(int k = j-SmoothWindow; k <= j+SmoothWindow; ++k)
+                        {
+                            for(int l = i-SmoothWindow; l <= i+SmoothWindow; ++l)
+                            {
+                                hIdx = k;
+                                wIdx = l;
+
+                                if(wIdx < 0)
+                                {
+                                    wIdx = 0;
+                                }
+
+                                if(hIdx < 0)
+                                {
+                                    hIdx = 0;
+                                }
+
+                                if(wIdx > widthPixels-1 && !barChart)
+                                {
+                                    wIdx = widthPixels-1;
+                                }
+
+                                if(hIdx > heightPixels-1)
+                                {
+                                    hIdx = heightPixels-1;
+                                }
+
+                                Color col = tex.GetPixel(wIdx, hIdx);
+                                bool f = false;
+                                Color32 c2 = new Color32((byte)(col.r*255), (byte)(col.g*255), (byte)(col.b*255), 255);
+                                for(int q = 0; q < lines.Length; ++q)
+                                {
+                                    //Debug.Log(c2);
+                                    //Debug.Log(colorLookup[q]);
+                                    if(c2.r == colorLookup[q].r && c2.g == colorLookup[q].g && c2.b == colorLookup[q].b)
+                                    {
+                                        if(doColorMatch)
+                                        {
+                                            if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
+                                            {
+                                                if(scaleQuarter)
+                                                {
+                                                    c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
+                                                }
+                                                else
+                                                {
+                                                    c = tileTextures[q].GetPixel(wIdx, hIdx);
+                                                }
+                                                f = true;
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if(scaleQuarter)
+                                            {
+                                                c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
+                                            }
+                                            else
+                                            {
+                                                c = tileTextures[q].GetPixel(wIdx, hIdx);
+                                            }
+                                            f = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if(!f)
+                                {
+                                    //Debug.Log(c2);
+                                    //find minimum
+                                    int minIndex = -1;
+                                    float maxDist = 99999f;
+                                    for(int q = 0; q < lines.Length; ++q)
+                                    {
+                                        if(Vector4.Distance((Color)c2, (Color)colorLookup[q]) < maxDist)
+                                        {
+                                            maxDist = Vector4.Distance((Color)c2, (Color)colorLookup[q]);
+                                            minIndex = q;
+                                        }
+                                    }
+
+                                    if(minIndex != -1)
+                                    {
+                                        if(doColorMatch)
+                                        {
+                                            if(matchColor.r == colorLookup[minIndex].r && 
+                                                matchColor.g == colorLookup[minIndex].g && 
+                                                matchColor.b == colorLookup[minIndex].b)
+                                            {
+                                                if(scaleQuarter)
+                                                {
+                                                    c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
+                                                }
+                                                else
+                                                {
+                                                    c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
+                                                }
+                                                f = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if(scaleQuarter)
+                                            {
+                                                c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
+                                            }
+                                            else
+                                            {
+                                                c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if(doColorMatch && !f)
+                                {
+                                    c = Color.black;
+                                }
+
+                                heightSum += c;
+                            
+                            }
+                        }
+
+                        c = (heightSum / (float)((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1)));
+
                     }
                     else
                     {
@@ -848,14 +1391,107 @@ public class MultiTactileTile : MonoBehaviour
                             }
                         }
 
-                        c = tex.GetPixel(wIdx, j);
+                        int hIdx = j;
 
+                        /*if(scaleQuarter)
+                        {
+                            hIdx *= 2;
+                            wIdx *= 2;
+                        }*/
+
+                        c = tex.GetPixel(wIdx, hIdx);
+                        //Debug.Log(c);
+                        bool f = false;
+                        Color32 c2 = new Color32((byte)(c.r*255), (byte)(c.g*255), (byte)(c.b*255), 255);
                         for(int q = 0; q < lines.Length; ++q)
                         {
-                            if(c == colorLookup[q])
+                            //Debug.Log(c2);
+                            //Debug.Log(colorLookup[q]);
+                            if(c2.r == colorLookup[q].r && c2.g == colorLookup[q].g && c2.b == colorLookup[q].b)
                             {
-                                c = tileTextures[q].GetPixel(wIdx, j);
+                                if(doColorMatch)
+                                {
+                                    if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
+                                    {
+                                        if(scaleQuarter)
+                                        {
+                                            c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
+                                        }
+                                        else
+                                        {
+                                            c = tileTextures[q].GetPixel(wIdx, hIdx);
+                                        }
+                                        f = true;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    if(scaleQuarter)
+                                    {
+                                        c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
+                                    }
+                                    else
+                                    {
+                                        c = tileTextures[q].GetPixel(wIdx, hIdx);
+                                    }
+                                    f = true;
+                                    break;
+                                }
                             }
+                        }
+
+                        if(!f)
+                        {
+                            //Debug.Log(c2);
+                            //find minimum
+                            int minIndex = -1;
+                            float maxDist = 99999f;
+                            for(int q = 0; q < lines.Length; ++q)
+                            {
+                                if(Vector4.Distance((Color)c2, (Color)colorLookup[q]) < maxDist)
+                                {
+                                    maxDist = Vector4.Distance((Color)c2, (Color)colorLookup[q]);
+                                    minIndex = q;
+                                }
+                            }
+
+                            if(minIndex != -1)
+                            {
+                                if(doColorMatch)
+                                {
+                                    if(matchColor.r == colorLookup[minIndex].r && 
+                                        matchColor.g == colorLookup[minIndex].g && 
+                                        matchColor.b == colorLookup[minIndex].b)
+                                    {
+                                        if(scaleQuarter)
+                                        {
+                                            c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
+                                        }
+                                        else
+                                        {
+                                            c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
+                                        }
+                                        f = true;
+                                    }
+                                }
+                                else
+                                {
+                                    if(scaleQuarter)
+                                    {
+                                        c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
+                                    }
+                                    else
+                                    {
+                                        c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
+                                    }
+                                }
+                            }
+                        }
+
+                        if(doColorMatch && !f)
+                        {
+                            c = Color.black;
                         }
                     }
                 }
@@ -1232,13 +1868,13 @@ public class MultiTactileTile : MonoBehaviour
 				if(j == 10 && i > start+LINE_LENGTH && i < end - LINE_LENGTH)
                 {
                     if(!castingOption) {
-                        currVert.y = 0.0005f;
+                        currVert.y = 0.0f;//0.0005f;    //old line
                     }
                 }
                 else if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
                          i >= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH && i < ((start+end) / 2) + HALF_LABEL_BOUNDS_WIDTH)
                 {
-                    int hLookup = j - START_LABEL_HEIGHT;
+                    /*int hLookup = j - START_LABEL_HEIGHT;
                     int wLookup = (i - (((start+end)/2)-HALF_LABEL_BOUNDS_WIDTH));
 
                     if(i >= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH && 
@@ -1314,7 +1950,7 @@ public class MultiTactileTile : MonoBehaviour
                             currVert.y = 0f;
                         }
                     }
-                    else
+                    else*/
                     {
                         currVert.y = 0f;
                     }
@@ -1452,7 +2088,7 @@ public class MultiTactileTile : MonoBehaviour
                         }
 
                         if(!castingInvert) {
-                            if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
+                            /*if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
                                 i >= (end / 2) - HALF_LABEL_BOUNDS_WIDTH && i < (end / 2) + HALF_LABEL_BOUNDS_WIDTH)
                             {
                                 int hLookup = j - START_LABEL_HEIGHT;
@@ -1563,7 +2199,7 @@ public class MultiTactileTile : MonoBehaviour
                                     //    numberArea = true;
                                     //} 
                                 }
-                            }
+                            }*/
                         }
                     }
                 }
