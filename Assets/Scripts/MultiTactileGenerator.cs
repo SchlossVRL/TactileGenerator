@@ -112,6 +112,12 @@ public class MultiTactileGenerator : MonoBehaviour
     [Tooltip("The radius of the divet, when customized")]
     float DivetRadius;
 
+    [SerializeField]
+    bool MatchScaleSize;
+
+    [SerializeField]
+    float ScaleFactor = 2.5f;
+
     void Start()
     {
         
@@ -133,7 +139,7 @@ public class MultiTactileGenerator : MonoBehaviour
             ipc.GenerateMultiTile(TestTexture, MultiTest, WorldWidth, WorldLength, BaseSize, TileSize, Invert, Color.black, ScaleQuarter, 
                 CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                 AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
-                DivetOffset, DivetRadius, BarChart, CastingHole);
+                DivetOffset, DivetRadius, BarChart, CastingHole, true, MatchScaleSize, ScaleFactor);
         }
     }
 
@@ -166,7 +172,7 @@ public class MultiTactileGenerator : MonoBehaviour
                 ipc.GenerateMultiTile(TestTexture, MultiTest, WorldWidth, WorldLength, BaseSize, TileSize, Invert, colorLookup[i], ScaleQuarter, 
                     CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                     AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
-                    DivetOffset, DivetRadius, BarChart, CastingHole, true);
+                    DivetOffset, DivetRadius, BarChart, CastingHole, true, MatchScaleSize, ScaleFactor);
             }
         }
     }

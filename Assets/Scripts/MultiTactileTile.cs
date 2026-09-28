@@ -36,6 +36,13 @@ public class MultiTactileTile : MonoBehaviour
     [SerializeField]
     TextAsset colorMatches;
 
+    [SerializeField]
+    bool matchScaleSize = true;
+
+    [SerializeField]
+    float scaleFactor = 2.5f;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -326,6 +333,24 @@ public class MultiTactileTile : MonoBehaviour
             string numString = vals[3].Substring(1,vals[3].Length-1);
             colorLookup[i] = new Color32((byte)int.Parse(vals[0]), (byte)int.Parse(vals[1]), (byte)int.Parse(vals[2]), 255);
         }
+
+        int origW = matchTexture.width;
+        int origH = matchTexture.height;
+
+        int currW = origW;
+        int currH = origH;
+
+        if(matchScaleSize)
+        {
+            currW = (int)((float)origW * scaleFactor);
+            currH = (int)((float)origH * scaleFactor);
+        }
+
+        /*if(scaleQuarter)
+        {
+            currW = currW / 2;
+            currH = currH / 2;
+        }*/
         
         for(int i = 0; i < indices.Length; i+=3)
         {
@@ -335,14 +360,24 @@ public class MultiTactileTile : MonoBehaviour
             int index2 = indices[i+1];
             int index3 = indices[i+2];
 
-            int i1x = indices[i] % matchTexture.width;
-            int i1y = indices[i] / matchTexture.width;
+            int i1x = indices[i] % currW;
+            int i1y = indices[i] / currW;
 
-            int i2x = indices[i+1] % matchTexture.width;
-            int i2y = indices[i+1] / matchTexture.width;
+            int i2x = indices[i+1] % currW;
+            int i2y = indices[i+1] / currW;
 
-            int i3x = indices[i+2] % matchTexture.width;
-            int i3y = indices[i+2] / matchTexture.width;
+            int i3x = indices[i+2] % currW;
+            int i3y = indices[i+2] / currW;
+
+            if(matchScaleSize)
+            {
+                i1x = (int)((float)i1x / (float)scaleFactor);
+                i1y = (int)((float)i1y / (float)scaleFactor);
+                i2x = (int)((float)i2x / (float)scaleFactor);
+                i2y = (int)((float)i2y / (float)scaleFactor);
+                i3x = (int)((float)i3x / (float)scaleFactor);
+                i3y = (int)((float)i3y / (float)scaleFactor);
+            }
 
             Color m1 = matchTexture.GetPixel(i1x, i1y);
             Color m2 = matchTexture.GetPixel(i2x, i2y);
@@ -447,14 +482,24 @@ public class MultiTactileTile : MonoBehaviour
             int index2 = indices[i+1];
             int index3 = indices[i+2];
 
-            int i1x = indices[i] % matchTexture.width;
-            int i1y = indices[i] / matchTexture.width;
+            int i1x = indices[i] % currW;
+            int i1y = indices[i] / currW;
 
-            int i2x = indices[i+1] % matchTexture.width;
-            int i2y = indices[i+1] / matchTexture.width;
+            int i2x = indices[i+1] % currW;
+            int i2y = indices[i+1] / currW;
 
-            int i3x = indices[i+2] % matchTexture.width;
-            int i3y = indices[i+2] / matchTexture.width;
+            int i3x = indices[i+2] % currW;
+            int i3y = indices[i+2] / currW;
+
+            if(matchScaleSize)
+            {
+                i1x = (int)((float)i1x / (float)scaleFactor);
+                i1y = (int)((float)i1y / (float)scaleFactor);
+                i2x = (int)((float)i2x / (float)scaleFactor);
+                i2y = (int)((float)i2y / (float)scaleFactor);
+                i3x = (int)((float)i3x / (float)scaleFactor);
+                i3y = (int)((float)i3y / (float)scaleFactor);
+            }
 
             Color m1 = matchTexture.GetPixel(i1x, i1y);
             Color m2 = matchTexture.GetPixel(i2x, i2y);
@@ -692,18 +737,24 @@ public class MultiTactileTile : MonoBehaviour
         float tileSize, bool invert, Color32 matchColor, bool scaleQuarter=false, bool castingOption=false, 
         float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
         bool makeControl=false, bool doSilicone=false, float castingBase=0.002f, bool addTileBorder=false, int borderTris=0, bool addCustomDivets=false, float divetOffset=0f,
-        float divetRadius = 0f, bool barChart=false, bool castingHole = false, bool doColorMatch=false) 
+        float divetRadius = 0f, bool barChart=false, bool castingHole = false, bool doColorMatch=false, bool matchScaleSize=false, float scaleFactor=2.5f) 
     {
         InitializeLookup();
 
         int heightPixels = tex.height;
         int widthPixels = tex.width;
 
-        /*if(scaleQuarter)
+        if(matchScaleSize)
+        {
+            heightPixels = (int)((float)heightPixels * scaleFactor);
+            widthPixels = (int)((float)widthPixels * scaleFactor);
+        }
+        
+        if(scaleQuarter)
         {
             heightPixels = heightPixels / 2;
             widthPixels = widthPixels / 2;
-        }*/
+        }
 
         string t = textAsset.text;
         string[] lineSeparators = new string[] { "\r\n", "\n" };
@@ -1275,7 +1326,56 @@ public class MultiTactileTile : MonoBehaviour
                                     hIdx = heightPixels-1;
                                 }
 
-                                Color col = tex.GetPixel(wIdx, hIdx);
+                                int origX = wIdx;
+                                int origY = hIdx;
+
+                                if(matchScaleSize)
+                                {
+                                    origX = (int)((float)origX / scaleFactor);
+                                    origY = (int)((float)origY / scaleFactor);
+
+                                    if(scaleQuarter)
+                                    {
+                                        origX = origX * 2;
+                                        origY = origY * 2;
+                                    }
+
+                                    int mWidth = tex.width;
+                                    int mHeight = tex.height;
+
+                                    if(scaleQuarter)
+                                    {
+                                        mWidth = mWidth / 2;
+                                        mHeight = mHeight / 2;    
+                                    }
+
+                                    if(wIdx % mWidth > 0)
+                                    {
+                                        if(((wIdx / mWidth) % 2) == 1)
+                                        {
+                                            wIdx = mWidth - (wIdx % mWidth); 
+                                        }
+                                        else
+                                        {
+                                            wIdx = (wIdx % mWidth); 
+                                        }
+                                    }
+
+                                    if(hIdx % mHeight > 0)
+                                    {
+                                        if(((hIdx / mHeight) % 2) == 1)
+                                        {
+                                            hIdx = mHeight - (hIdx % mHeight); 
+                                        }
+                                        else
+                                        {
+                                            hIdx = hIdx % mHeight; 
+                                        }
+                                    }
+                                }
+
+                                //these two lookups need to differ...
+                                Color col = tex.GetPixel(origX, origY);
                                 bool f = false;
                                 Color32 c2 = new Color32((byte)(col.r*255), (byte)(col.g*255), (byte)(col.b*255), 255);
                                 for(int q = 0; q < lines.Length; ++q)
@@ -1290,7 +1390,14 @@ public class MultiTactileTile : MonoBehaviour
                                             {
                                                 if(scaleQuarter)
                                                 {
-                                                    c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
+                                                    if(matchScaleSize)
+                                                    {
+                                                        c = tileTextures[q].GetPixel(wIdx, hIdx);
+                                                    }
+                                                    else
+                                                    {
+                                                        c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
+                                                    }
                                                 }
                                                 else
                                                 {
