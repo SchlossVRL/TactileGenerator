@@ -316,7 +316,7 @@ public class TactileTile : MonoBehaviour
             castingTrisHeight = (int)((float)(castingBorderSize / worldHeight) * (float)heightPixels);
             
             Debug.Log(castingTrisWidth);
-            sphereWidth = (castingTrisWidth / 4.5f);    //3.8f
+            sphereWidth = (castingTrisWidth / 5f);//4.5f);    //3.8f
             //Debug.Log(castingTrisWidth);
 
             heightPixels += (2 * castingTrisWidth);

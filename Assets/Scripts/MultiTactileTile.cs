@@ -31,9 +31,6 @@ public class MultiTactileTile : MonoBehaviour
     int colorMatchIndex;
 
     [SerializeField]
-    float _tolerance;
-
-    [SerializeField]
     TextAsset colorMatches;
 
     [SerializeField]
@@ -386,6 +383,10 @@ public class MultiTactileTile : MonoBehaviour
             Color m2 = matchTexture.GetPixel(i2x, i2y);
             Color m3 = matchTexture.GetPixel(i3x, i3y);
             
+            Color32 m32_1 = new Color32((byte)(m1.r * 255f), (byte)(m1.g * 255f), (byte)(m1.b * 255f), 255);
+            Color32 m32_2 = new Color32((byte)(m2.r * 255f), (byte)(m2.g * 255f), (byte)(m2.b * 255f), 255);
+            Color32 m32_3 = new Color32((byte)(m3.r * 255f), (byte)(m3.g * 255f), (byte)(m3.b * 255f), 255);
+            
             Vector4 d1 = m1;
             Vector4 d2 = m2;
             Vector4 d3 = m3;
@@ -400,7 +401,22 @@ public class MultiTactileTile : MonoBehaviour
 
             for(int p = 0; p < colorLookup.Length; ++p)
             {
-                float dist1 = Vector4.Distance(d1, (Color)colorLookup[p]);
+                if(m32_1.r == colorLookup[p].r && m32_1.g == colorLookup[p].g && m32_1.b == colorLookup[p].b)
+                {
+                    matchIndex1 = p;
+                }
+
+                if(m32_2.r == colorLookup[p].r && m32_2.g == colorLookup[p].g && m32_2.b == colorLookup[p].b)
+                {
+                    matchIndex2 = p;
+                }
+
+                if(m32_3.r == colorLookup[p].r && m32_3.g == colorLookup[p].g && m32_3.b == colorLookup[p].b)
+                {
+                    matchIndex3 = p;
+                }
+
+                /*float dist1 = Vector4.Distance(d1, (Color)colorLookup[p]);
                 if(dist1 < minMatchDist1)
                 {
                     minMatchDist1 = dist1;
@@ -419,7 +435,7 @@ public class MultiTactileTile : MonoBehaviour
                 {
                     minMatchDist3 = dist3;
                     matchIndex3 = p;
-                }
+                }*/
             }
 
             Vector3 v1 = verts[indices[i]];
@@ -507,6 +523,10 @@ public class MultiTactileTile : MonoBehaviour
             Color m1 = matchTexture.GetPixel(i1x, i1y);
             Color m2 = matchTexture.GetPixel(i2x, i2y);
             Color m3 = matchTexture.GetPixel(i3x, i3y);
+
+            Color32 m32_1 = new Color32((byte)(m1.r * 255f), (byte)(m1.g * 255f), (byte)(m1.b * 255f), 255);
+            Color32 m32_2 = new Color32((byte)(m2.r * 255f), (byte)(m2.g * 255f), (byte)(m2.b * 255f), 255);
+            Color32 m32_3 = new Color32((byte)(m3.r * 255f), (byte)(m3.g * 255f), (byte)(m3.b * 255f), 255);
             
             Vector4 d1 = m1;
             Vector4 d2 = m2;
@@ -522,7 +542,22 @@ public class MultiTactileTile : MonoBehaviour
 
             for(int p = 0; p < colorLookup.Length; ++p)
             {
-                float dist1 = Vector4.Distance(d1, (Color)colorLookup[p]);
+                if(m32_1.r == colorLookup[p].r && m32_1.g == colorLookup[p].g && m32_1.b == colorLookup[p].b)
+                {
+                    matchIndex1 = p;
+                }
+
+                if(m32_2.r == colorLookup[p].r && m32_2.g == colorLookup[p].g && m32_2.b == colorLookup[p].b)
+                {
+                    matchIndex2 = p;
+                }
+
+                if(m32_3.r == colorLookup[p].r && m32_3.g == colorLookup[p].g && m32_3.b == colorLookup[p].b)
+                {
+                    matchIndex3 = p;
+                }
+
+                /*float dist1 = Vector4.Distance(d1, (Color)colorLookup[p]);
                 if(dist1 < minMatchDist1)
                 {
                     minMatchDist1 = dist1;
@@ -541,7 +576,7 @@ public class MultiTactileTile : MonoBehaviour
                 {
                     minMatchDist3 = dist3;
                     matchIndex3 = p;
-                }
+                }*/
             }
             
             //instead of relaying on the tolerance check, check if any color is closest to the match, vs. other colors...
@@ -612,6 +647,13 @@ public class MultiTactileTile : MonoBehaviour
                             newVertices[vCount+2] = v3;   
                         }
 
+                        /*if(makeControl)
+                        {
+                            newVertices[vCount].y = 0.002f;
+                            newVertices[vCount+1].y = 0.002f;
+                            newVertices[vCount+2].y = 0.002f;
+                        }*/
+
                         newColors[vCount] = c;
                         newColors[vCount+1] = c;
                         newColors[vCount+2] = c;
@@ -649,6 +691,13 @@ public class MultiTactileTile : MonoBehaviour
                             newVertices[vCount+1] = v2New;
                             newVertices[vCount+2] = v3;
                         }
+
+                        /*if(makeControl)
+                        {
+                            newVertices[vCount].y = 0.002f;
+                            newVertices[vCount+1].y = 0.002f;
+                            newVertices[vCount+2].y = 0.002f;
+                        }*/
 
                         newColors[vCount] = c;
                         newColors[vCount+1] = c;
@@ -689,6 +738,16 @@ public class MultiTactileTile : MonoBehaviour
                         newVertices[vCount+3] = v1New;
                         newVertices[vCount+4] = v2New;
                         newVertices[vCount+5] = v3New;
+
+                        /*if(makeControl)
+                        {
+                            newVertices[vCount].y = 0.002f;
+                            newVertices[vCount+1].y = 0.002f;
+                            newVertices[vCount+2].y = 0.002f;
+                            newVertices[vCount+3].y = 0.002f;
+                            newVertices[vCount+4].y = 0.002f;
+                            newVertices[vCount+5].y = 0.002f;
+                        }*/
 
                         newIndices[iIndex] = iIndex;
                         newIndices[iIndex+1] = iIndex+1;
@@ -783,16 +842,9 @@ public class MultiTactileTile : MonoBehaviour
             //Debug.Log(numString);
             
             tileTextures[i] = (Texture2D)Resources.Load("brodatz/D"+numString[i]);
-            /*if(tileTextures[i] != null)
-            {
-                Debug.Log(tileTextures[i].name);
-                Debug.Log(colorLookup[i]);
-            }
-            else
-            {
-                Debug.Log("null");
-            }*/
         }
+
+        bool doFleece = false;
 
         if(numString[originalIndex]=="0")
         {
@@ -803,14 +855,14 @@ public class MultiTactileTile : MonoBehaviour
         if(letterString[originalIndex] == "M")
         {
             //fleece
-
+            doFleece = true;
             //doSilicone = true;
             castingBase = 0.00275f;
             castingBorderSize = 0f;//0.0127f;
             castingOption = true;
             //AddCastingDivets = true;
             addTileBorder = true;
-            borderTris = 4;
+            borderTris = 8;
             Debug.Log("FOUND FLEECE");
         }
         else if(letterString[originalIndex] == "P")
@@ -861,12 +913,6 @@ public class MultiTactileTile : MonoBehaviour
         if(castingOption)
         {
             //base number of additional triangles on texture size...
-            if(barChart) 
-            {
-                widthIncrement = (worldWidth / ((float)(widthPixels-1f))) * 3f;
-                widthPixels /= 3;
-            }
-
             castingTrisWidth = (int)((float)(castingBorderSize / worldWidth) * (float)widthPixels);
             castingTrisHeight = (int)((float)(castingBorderSize / worldHeight) * (float)heightPixels);
             
@@ -881,19 +927,7 @@ public class MultiTactileTile : MonoBehaviour
             worldHeight += (2 * castingBorderSize);
             
         }
-        else
-        {
-            if(barChart) 
-            {
-                widthIncrement = (worldWidth / ((float)(widthPixels-1f))) * 3f;// * 0.3333333f;
-                widthPixels /= 3;
-                
-                //for bar chart casting we want to sample the middle 1/3 of the texture, but also add border triangles...
 
-                //widthPixels = widthPixels+1;
-            }
-        }
-        
         int BASE_VERT_OFFSET = widthPixels * heightPixels;// * 2;
         //int BASE_INDEX_OFFSET = tex.width * 12 + tex.height * 12;
 
@@ -903,10 +937,6 @@ public class MultiTactileTile : MonoBehaviour
 
         int LINE_LENGTH = 50;
 
-        if(barChart) {
-            LINE_LENGTH = 12;
-        }
-
         float halfWidth = worldWidth * 0.5f;
         float halfHeight = worldHeight * 0.5f;
 
@@ -915,7 +945,6 @@ public class MultiTactileTile : MonoBehaviour
         int[] indices = new int[numTrianglesIndices];
 
         Vector3 [] verts = new Vector3[numVerts];
-        //Vector3 [] normals = new Vector3[numVerts];
         Color[] colors = new Color[numVerts];
 
         int vertIndex = 0;
@@ -926,16 +955,12 @@ public class MultiTactileTile : MonoBehaviour
         //Debug.Log(s);
 
         int HALF_LABEL_BOUNDS_WIDTH = (LABEL_NUMBER_WIDTH * 2 + 6);
-        if(barChart) { 
-            HALF_LABEL_BOUNDS_WIDTH = LABEL_NUMBER_WIDTH * 2 - 3;
-        }
-        
+
         if(AddLetter && s.Length > 2) {
             HALF_LABEL_BOUNDS_WIDTH = LABEL_NUMBER_WIDTH * 2 + (LABEL_NUMBER_WIDTH/3);
         } else if(AddLetter && s.Length == 1) {
             HALF_LABEL_BOUNDS_WIDTH = (LABEL_NUMBER_WIDTH + 6);
         }
-
 
         int START_LABEL_HEIGHT = 30;
         int SPACING = 8;
@@ -946,30 +971,15 @@ public class MultiTactileTile : MonoBehaviour
             SPACING = SPACING / 2;
         }
 
-        if(barChart) {
-            SPACING = (SPACING / 3);
-        }
-
         //Debug.Log(widthPixels);
         //bottom
 		for(int j = 0; j < heightPixels; j++)
         {
             int start = 0;
             int end = widthPixels;
-            if (barChart)
-            {
-                if (!castingOption)
-                {
-                    start = widthPixels;
-                    end = start + widthPixels;
-                }
-                    //start = widthPixels - castingTrisWidth;
-                    //end = start + castingTrisWidth * 2 + widthPixels
-            }
 
             for(int i = start; i < end; i++)
             {
-
                 Color c = Color.white;
                 if(castingOption)
                 {
@@ -1012,91 +1022,6 @@ public class MultiTactileTile : MonoBehaviour
                     //    currVert.y = 0f;// 0.0005f; //old underline
                     }
                 }
-                /*else if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
-                         i >= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH && i < ((start+end) / 2) + HALF_LABEL_BOUNDS_WIDTH)
-                {
-                    int hLookup = j - START_LABEL_HEIGHT;
-                    int wLookup = (i - (((start+end)/2)-HALF_LABEL_BOUNDS_WIDTH));
-
-                    if(i >= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH && 
-                        i < ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + LABEL_NUMBER_WIDTH && 
-                        s.Length > 0)
-                    {
-                        //1st digit...
-                        int d = 0;//int.Parse(s[0].ToString());
-                        if(AddLetter) {
-                            if(GetLetter(wLookup, hLookup, Letter)) {
-                                currVert.y = 0.0005f;
-                            }
-                            else {
-                                currVert.y = 0f;
-                            }
-                        }
-                        else {
-                            if(MultiTactileTile.DigitLookup[wLookup,hLookup,d] > 0) {
-                                currVert.y = 0.0005f;
-                                //Debug.Log("Yes");
-                            } else {
-                                currVert.y = 0f;
-                            }
-                        }
-                    }
-                    else if(i > ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH + SPACING) && 
-                        i <= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && 
-                        ((s.Length > 1) || (AddLetter && s.Length > 0)))
-                    {
-                        wLookup -= (LABEL_NUMBER_WIDTH + SPACING+1);
-                        int d = 0;
-                        if(AddLetter) {
-                            //d = int.Parse(s[0].ToString());
-                        } else {
-                            //d = int.Parse(s[1].ToString());
-                        }
-                        //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
-
-                        if(DigitLookup[wLookup,hLookup,d] > 0) {
-                            currVert.y = 0.0005f;
-                        } else {
-                            currVert.y = 0f;
-                        }
-                    }
-                    else if(i > ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2) + SPACING*2 && 
-                        i <= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && 
-                        ((s.Length > 2) || (AddLetter && s.Length > 1)) )
-                    {
-                        wLookup -= (LABEL_NUMBER_WIDTH*2 + (SPACING*2)+1);
-                        int d = 0;
-                        if(AddLetter) {
-                            //d = int.Parse(s[1].ToString());
-                        } else {
-                            //d = int.Parse(s[2].ToString());
-                        }
-                        //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
-
-                        if(DigitLookup[wLookup,hLookup,d] > 0) {
-                            currVert.y = 0.0005f;
-                        } else {
-                            currVert.y = 0f;
-                        }
-                    }
-                    else if(i > ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3) + SPACING*3 && 
-                        i <= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*4 + SPACING*3) && 
-                        (AddLetter && s.Length > 2))
-                    {
-                        wLookup -= (LABEL_NUMBER_WIDTH*3 + (SPACING*3)+1);
-                        int d = int.Parse(s[2].ToString());
-                        if(DigitLookup[wLookup,hLookup,d] > 0) {
-                            currVert.y = 0.0005f;
-                        } else {
-                            currVert.y = 0f;
-                        }
-                    }
-                    else
-                    {
-                        currVert.y = 0f;
-                    }
-
-                }*/
                 else
                 {
 				    currVert.y = 0f;
@@ -1138,93 +1063,86 @@ public class MultiTactileTile : MonoBehaviour
         {
             int start = 0;
             int end = widthPixels;
-            if(barChart) {
-                if(!castingOption)
-                {
-                    start = widthPixels;
-                    end = start+widthPixels;
-                }
-            }
-
+            
             for(int i = start; i < end; i++)
             {
                 Color c = Color.black;
+                
                 bool bothIn = true;
                 bool numberArea = false;
                 bool onBorder = false;
 
-                if(castingOption)
+                int wIdx = end-1-i;
+                if(doFleece)
                 {
-                    int wIdx = end-1-i;
-                    //int wIdx = i;
-                    int hIdx = j;
-                    int wIdx2 = wIdx;
+                    wIdx = i;
+                }
 
-                    if(i > castingTrisWidth && i < end - castingTrisWidth)
+                int hIdx = j;
+
+                if(i > castingTrisWidth && i < end - castingTrisWidth)
+                {
+                    wIdx = wIdx - castingTrisWidth;
+                }
+                else
+                {
+                    bothIn = false;
+                }
+
+                if(j > castingTrisHeight && j < heightPixels - castingTrisHeight)
+                {
+                    hIdx = hIdx - castingTrisHeight;
+                }
+                else
+                {
+                    bothIn = false;
+                }
+
+                if(bothIn)
+                {
+                    if(Smooth)
                     {
-                        wIdx = wIdx - castingTrisWidth;
-                        if(barChart)
+                        if (invert)
                         {
-                            //want to sample from the middle of the original texture...
-
-                            wIdx += originalPixelWidth;
-                        }
-                    }
-                    else
-                    {
-                        bothIn = false;
-                        /*if(addTileBorder) {
-                            if(((i >= castingTrisWidth - borderTris) && (i <= castingTrisWidth) || 
-                            (i >= end - castingTrisWidth) && (i <= (end - castingTrisWidth + borderTris))) && 
-                            ((j <= heightPixels - castingTrisHeight + borderTris) && j >= castingTrisHeight - borderTris)) {
-                                onBorder = true;
-                            }
-                        }*/
-                    }
-
-                    if(j > castingTrisHeight && j < heightPixels - castingTrisHeight)
-                    {
-                        hIdx = hIdx - castingTrisHeight;
-                    }
-                    else
-                    {
-                        bothIn = false;
-                        /*if(addTileBorder) {
-                            if(((j >= castingTrisHeight - borderTris) && (j <= castingTrisHeight) ||
-                             (j >= heightPixels - castingTrisHeight) && (j <= (heightPixels - castingTrisHeight + borderTris))) &&
-                             ((i <= end - castingTrisWidth + borderTris) && i >= castingTrisWidth - borderTris)) {
-                                onBorder = true;
-                            }
-                        }*/
-                    }
-
-                    if(bothIn)
-                    {
-                        if(Smooth)
-                        {
-                            
-                            //int wIdx = i;
-                            //int hIdx = j;
-                            if (invert)
+                            wIdx = end - 1 - i;
+                            if (barChart)
                             {
-                                wIdx = end - 1 - i;
-                                if (barChart)
-                                {
-                                    //want to sample from the middle of the original texture...
+                                //want to sample from the middle of the original texture...
 
-                                    wIdx += originalPixelWidth;
-                                }
+                                wIdx += originalPixelWidth;
                             }
-                            
-                            //c = CalcSmoothColor(wIdx, j, end, heightPixels, SmoothWindow, tex, barChart);
-                            c = Color.black;
+                        }
+                        
+                        c = Color.black;
 
-                            Color heightSum = Color.black;
-                            int numMatching = 0;
-                            
+                        Color heightSum = Color.black;
+
+                        int numMatching = 0;
+                        int numBorderTris = 0;
+                        
+                        int oX = wIdx;
+                        int oY = hIdx;
+
+                        if(matchScaleSize)
+                        {
+                            oX = (int)((float)oX / scaleFactor);
+                            oY = (int)((float)oY / scaleFactor);
+
+                            if(scaleQuarter)
+                            {
+                                oX = oX * 2;
+                                oY = oY * 2;
+                            }
+                        }
+
+                        //when smoothing, we first need to check if the current pixel we are on matches...
+                        Color colM = tex.GetPixel(oX, oY);//texColors[origX + tex.width + origY];//
+                        
+                        Color32 colMatch = new Color32((byte)(colM.r*255f), (byte)(colM.g*255f), (byte)(colM.b*255f), 255);
+                        
+                        if(colMatch.r == matchColor.r && colMatch.g == matchColor.g && colMatch.b == matchColor.b)
+                        {
                             //check if the current pixel we are on matches...
-
-
                             for(int k = j-SmoothWindow; k <= j+SmoothWindow; ++k)
                             {
                                 for(int l = i-SmoothWindow; l <= i+SmoothWindow; ++l)
@@ -1235,7 +1153,8 @@ public class MultiTactileTile : MonoBehaviour
                                     }
                                     else
                                     {
-                                        break;
+                                        //break;
+                                        continue;
                                     }
 
                                     if(l > castingTrisWidth && l < widthPixels - castingTrisWidth)
@@ -1244,7 +1163,8 @@ public class MultiTactileTile : MonoBehaviour
                                     }
                                     else
                                     {
-                                        break;
+                                        //break;
+                                        continue;
                                     }
 
                                     if(wIdx < 0)
@@ -1297,7 +1217,7 @@ public class MultiTactileTile : MonoBehaviour
                                         //should be wIdx - borderWidth in indices...
                                         //we do this above...
                                         
-                                        if((wIdx % mWidth) > 0)
+                                        if((wIdx / mWidth) > 0)
                                         {
                                             if(((wIdx / mWidth) % 2) == 1)
                                             {
@@ -1309,7 +1229,7 @@ public class MultiTactileTile : MonoBehaviour
                                             }
                                         }
 
-                                        if(hIdx % mHeight > 0)
+                                        if(hIdx / mHeight > 0)
                                         {
                                             if(((hIdx / mHeight) % 2) == 1)
                                             {
@@ -1327,7 +1247,15 @@ public class MultiTactileTile : MonoBehaviour
                                     //into the actual brodatz texture.
                                     //this here for casted version needs to look up reverse X...
 
-                                    Color col = tex.GetPixel(tex.width-1-origX, origY);
+                                    int iOrigX = tex.width-1-origX;
+                                    int iWIdx = end-1-wIdx;
+                                    if(doFleece)
+                                    {
+                                       iOrigX = origX;
+                                       iWIdx = wIdx;
+                                    }
+
+                                    Color col = tex.GetPixel(iOrigX, origY);
                                     bool f = false;
                                     Color32 c2 = new Color32((byte)(col.r*255), (byte)(col.g*255), (byte)(col.b*255), 255);
                                     for(int q = 0; q < lines.Length; ++q)
@@ -1340,24 +1268,22 @@ public class MultiTactileTile : MonoBehaviour
                                             {
                                                 if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
                                                 {
-                                                    //if(k != l)
-                                                    //{
-                                                    //    numMatching++;
-                                                    //}
+                                                    numMatching++;
+                                                    
                                                     if(scaleQuarter)
                                                     {
                                                         if(matchScaleSize)
                                                         {
-                                                            c = tileTextures[q].GetPixel(end-1-wIdx, hIdx);
+                                                            c = tileTextures[q].GetPixel(wIdx, hIdx);
                                                         }
                                                         else
                                                         {
-                                                            c = tileTextures[q].GetPixel((end-1-wIdx)/2, hIdx/2);
+                                                            c = tileTextures[q].GetPixel((wIdx)/2, hIdx/2);
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        c = tileTextures[q].GetPixel((end-1-wIdx), hIdx);
+                                                        c = tileTextures[q].GetPixel((wIdx), hIdx);
                                                     }
                                                     f = true;
                                                     break;
@@ -1367,74 +1293,14 @@ public class MultiTactileTile : MonoBehaviour
                                             {
                                                 if(scaleQuarter)
                                                 {
-                                                    c = tileTextures[q].GetPixel((end-1-wIdx)/2, hIdx/2);
+                                                    c = tileTextures[q].GetPixel((wIdx)/2, hIdx/2);
                                                 }
                                                 else
                                                 {
-                                                    c = tileTextures[q].GetPixel((end-1-wIdx), hIdx);
+                                                    c = tileTextures[q].GetPixel((wIdx), hIdx);
                                                 }
                                                 f = true;
                                                 break;
-                                            }
-                                        }
-                                    }
-
-                                    if(!f)
-                                    {
-                                        //Debug.Log(c2);
-                                        //find minimum
-                                        int minIndex = -1;
-                                        float maxDist = 99999f;
-                                        for(int q = 0; q < lines.Length; ++q)
-                                        {
-                                            if(Vector4.Distance((Color)c2, (Color)colorLookup[q]) < maxDist)
-                                            {
-                                                maxDist = Vector4.Distance((Color)c2, (Color)colorLookup[q]);
-                                                minIndex = q;
-                                            }
-                                        }
-
-                                        if(minIndex != -1)
-                                        {
-                                            if(doColorMatch)
-                                            {
-                                                if(matchColor.r == colorLookup[minIndex].r && 
-                                                    matchColor.g == colorLookup[minIndex].g && 
-                                                    matchColor.b == colorLookup[minIndex].b)
-                                                {
-                                                    //if(k != l)
-                                                    //{
-                                                        numMatching++;
-                                                    //}
-
-                                                    if(scaleQuarter)
-                                                    {
-                                                        if(matchScaleSize)
-                                                        {
-                                                            c = tileTextures[minIndex].GetPixel(end-1-wIdx, hIdx);
-                                                        }
-                                                        else
-                                                        {
-                                                            c = tileTextures[minIndex].GetPixel((end-1-wIdx)/2, hIdx/2);
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        c = tileTextures[minIndex].GetPixel((end-1-wIdx), hIdx);
-                                                    }
-                                                    f = true;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if(scaleQuarter)
-                                                {
-                                                    c = tileTextures[minIndex].GetPixel((end-1-wIdx)/2, hIdx/2);
-                                                }
-                                                else
-                                                {
-                                                    c = tileTextures[minIndex].GetPixel((end-1-wIdx), hIdx);
-                                                }
                                             }
                                         }
                                     }
@@ -1448,561 +1314,221 @@ public class MultiTactileTile : MonoBehaviour
                                 
                                 }
                             }
-
-                            c = (heightSum / (float)((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1)));
-
-                            if(addTileBorder && numMatching > 0 && numMatching < ((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1))/2)
-                            {
-                                
-                                //onBorder = true;
-                                hIdx = j - castingTrisHeight;
-                                wIdx = i - castingTrisWidth;
-                                
-                                int origX = wIdx;
-                                int origY = hIdx;
-
-                                if(matchScaleSize)
-                                {
-                                    origX = (int)((float)origX / scaleFactor);
-                                    origY = (int)((float)origY / scaleFactor);
-
-                                    if(scaleQuarter)
-                                    {
-                                        origX = origX * 2;
-                                        origY = origY * 2;
-                                    }
-
-                                    int mWidth = tex.width;
-                                    int mHeight = tex.height;
-
-                                    if(scaleQuarter)
-                                    {
-                                        mWidth = mWidth / 2;
-                                        mHeight = mHeight / 2;    
-                                    }
-
-                                    //this index can be mismatched from the texture size...
-                                    //so need to do a different calculation here...
-                                    //should be wIdx - borderWidth in indices...
-                                    //we do this above...
-                                    
-                                    if((wIdx % mWidth) > 0)
-                                    {
-                                        if(((wIdx / mWidth) % 2) == 1)
-                                        {
-                                            wIdx = mWidth - (wIdx % mWidth); 
-                                        }
-                                        else
-                                        {
-                                            wIdx = (wIdx % mWidth); 
-                                        }
-                                    }
-
-                                    if(hIdx % mHeight > 0)
-                                    {
-                                        if(((hIdx / mHeight) % 2) == 1)
-                                        {
-                                            hIdx = mHeight - (hIdx % mHeight); 
-                                        }
-                                        else
-                                        {
-                                            hIdx = hIdx % mHeight; 
-                                        }
-                                    }
-                                }
-
-                                //these two lookups need to differ...
-                                //this is looking up in the color reference texture, which we use it's color value as a lookup
-                                //into the actual brodatz texture.
-                                Color col = tex.GetPixel(origX, origY);
-                                bool f = false;
-                                Color32 c2 = new Color32((byte)(col.r*255), (byte)(col.g*255), (byte)(col.b*255), 255);
-                                //Debug.Log(c2);
-                                if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
-                                {
-                                    f = true;
-                                }
-
-                                if(!f)
-                                {
-                                    onBorder = true;
-                                }
-                                //Debug.Log("Num matching: " + numMatching);
-                            }
-                            //c = CalcSmoothColor(wIdx, hIdx, end, heightPixels, SmoothWindow, tex, barChart);
                         }
                         else
                         {
-                            
-                            c = tex.GetPixel(wIdx, hIdx);
-                        }
-                        c.g = 0f;
-                    }
-                    else
-                    {
-                        //if within hemisphere area...
-                        if(AddCastingDivets)
-                        {
-                            if(addCustomDivets) {
-                                if(CalcCastingSphereCustom(i, j, castingTrisWidth, end, heightPixels, worldWidth, worldHeight, 
-                                    halfWidth, halfHeight, divetOffset, divetRadius, out c.r))
+                            if(addTileBorder)
+                            {
+                                for(int k = j-SmoothWindow; k <= j+SmoothWindow; ++k)
                                 {
-                                    c.g = 1f;
-                                }
-                            } else {
-                                if(CalcCastingSphere(i, j, end, heightPixels, castingTrisWidth, sphereWidth, out c.r))
-                                {
-                                    c.g = 1f;
-                                }
+                                    for(int l = i-SmoothWindow; l <= i+SmoothWindow; ++l)
+                                    {
+                                        if(k > castingTrisHeight && k < heightPixels - castingTrisHeight)
+                                        {
+                                            hIdx = k - castingTrisHeight;
+                                        }
+                                        else
+                                        {
+                                            //break;
+                                            continue;
+                                        }
+
+                                        if(l > castingTrisWidth && l < widthPixels - castingTrisWidth)
+                                        {
+                                            wIdx = l - castingTrisWidth;
+                                        }
+                                        else
+                                        {
+                                            //break;
+                                            continue;
+                                        }
+
+                                        if(wIdx < 0)
+                                        {
+                                            wIdx = 0;
+                                        }
+
+                                        if(hIdx < 0)
+                                        {
+                                            hIdx = 0;
+                                        }
+
+                                        if(wIdx > widthPixels-1 && !barChart)
+                                        {
+                                            wIdx = widthPixels-1;
+                                        }
+
+                                        if(hIdx > heightPixels-1)
+                                        {
+                                            hIdx = heightPixels-1;
+                                        }
+
+                                        int origX = wIdx;
+                                        int origY = hIdx;
+
+                                        if(matchScaleSize)
+                                        {
+                                            origX = (int)((float)origX / scaleFactor);
+                                            origY = (int)((float)origY / scaleFactor);
+
+                                            if(scaleQuarter)
+                                            {
+                                                origX = origX * 2;
+                                                origY = origY * 2;
+                                            }
+
+                                            int mWidth = tex.width;
+                                            int mHeight = tex.height;
+
+                                            if(scaleQuarter)
+                                            {
+                                                mWidth = mWidth / 2;
+                                                mHeight = mHeight / 2;    
+                                            }
+                                            
+                                            //mWidth = mWidth - 1;
+                                            //mHeight = mHeight - 1;
+                                            //this index can be mismatched from the texture size...
+                                            //so need to do a different calculation here...
+                                            //should be wIdx - borderWidth in indices...
+                                            //we do this above...
+                                            
+                                            if((wIdx / mWidth) > 0)
+                                            {
+                                                if(((wIdx / mWidth) % 2) == 1)
+                                                {
+                                                    wIdx = mWidth - (wIdx % mWidth); 
+                                                }
+                                                else
+                                                {
+                                                    wIdx = (wIdx % mWidth); 
+                                                }
+                                            }
+
+                                            if(hIdx / mHeight > 0)
+                                            {
+                                                if(((hIdx / mHeight) % 2) == 1)
+                                                {
+                                                    hIdx = mHeight - (hIdx % mHeight); 
+                                                }
+                                                else
+                                                {
+                                                    hIdx = hIdx % mHeight; 
+                                                }
+                                            }
+                                        }
+
+                                        //these two lookups need to differ...
+                                        //this is looking up in the color reference texture, which we use it's color value as a lookup
+                                        //into the actual brodatz texture.
+                                        //this here for casted version needs to look up reverse X...
+
+                                        int iOrigX = tex.width-1-origX;
+                                        int iWIdx = end-1-wIdx;
+                                        if(doFleece)
+                                        {
+                                            iOrigX = origX;
+                                            iWIdx = wIdx;
+                                        }
+
+                                        Color col = tex.GetPixel(iOrigX, origY);
+                                        bool f = false;
+                                        Color32 c2 = new Color32((byte)(col.r*255), (byte)(col.g*255), (byte)(col.b*255), 255);
+                                        for(int q = 0; q < lines.Length; ++q)
+                                        {
+                                            if(c2.r == colorLookup[q].r && c2.g == colorLookup[q].g && c2.b == colorLookup[q].b)
+                                            {
+                                                if(doColorMatch)
+                                                {
+                                                    if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
+                                                    {
+                                                        numBorderTris++;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } 
                             }
                         }
 
-                        if(!castingInvert) {
-                            /*if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
-                                i >= (end / 2) - HALF_LABEL_BOUNDS_WIDTH && i < (end / 2) + HALF_LABEL_BOUNDS_WIDTH)
-                            {
-                                int hLookup = j - START_LABEL_HEIGHT;
-                                int wLookup = (i - ((end/2)-HALF_LABEL_BOUNDS_WIDTH));
-
-                                if(i >= (end / 2) - HALF_LABEL_BOUNDS_WIDTH && 
-                                    i < (end / 2) - HALF_LABEL_BOUNDS_WIDTH + LABEL_NUMBER_WIDTH && 
-                                    s.Length > 0)
-                                {
-                                    if(wLookup <= (LABEL_NUMBER_WIDTH/2)) {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) + ((LABEL_NUMBER_WIDTH/2) - wLookup) - 1;
-                                        //Debug.Log(wLookup);
-                                    } else {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) - (wLookup - (LABEL_NUMBER_WIDTH/2)) - 1;
-                                        // Debug.Log(wLookup);
-                                    }
-
-                                    //1st digit...
-
-                                    int d = int.Parse(s[s.Length-1].ToString());
-
-                                    if(MultiTactileTile.DigitLookup[wLookup,hLookup,d] > 0) {
-                                        currVert.y = 0.0005f;
-                                        numberArea = true;
-                                    } 
-                                    
-                                }
-                                else if(i > (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH + SPACING) && 
-                                    i <= (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && 
-                                    ((s.Length > 1) || (AddLetter && s.Length > 0)))
-                                {
-                                    wLookup -= (LABEL_NUMBER_WIDTH + SPACING+1);
-                                    
-                                    if(wLookup <= (LABEL_NUMBER_WIDTH/2)) {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) + ((LABEL_NUMBER_WIDTH/2) - wLookup) - 1;
-                                        //Debug.Log(wLookup);
-                                    } else {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) - (wLookup - (LABEL_NUMBER_WIDTH/2)) - 1;
-                                        // Debug.Log(wLookup);
-                                    }
-                                    int d = 0;
-                                    if(AddLetter && s.Length == 1) {
-                                        if(GetLetter(wLookup, hLookup, Letter)) {
-                                            currVert.y = 0.0005f;
-                                            numberArea = true;
-                                        }
-                                    } else {
-                                        d = int.Parse(s[s.Length-2].ToString());
-                                        if(DigitLookup[wLookup,hLookup,d] > 0) {
-                                            currVert.y = 0.0005f;
-                                            numberArea = true;
-                                        } 
-                                    }
-                                    //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
-
-
-                                }
-                                else if(i > (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2) + SPACING*2 && 
-                                    i <= (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && 
-                                    ((s.Length > 2) || (AddLetter && s.Length > 1)) )
-                                {
-                                    wLookup -= (LABEL_NUMBER_WIDTH*2 + (SPACING*2)+1);
-                                    
-                                    if(wLookup <= (LABEL_NUMBER_WIDTH/2)) {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) + ((LABEL_NUMBER_WIDTH/2) - wLookup) - 1;
-                                        //Debug.Log(wLookup);
-                                    } else {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) - (wLookup - (LABEL_NUMBER_WIDTH/2)) - 1;
-                                        // Debug.Log(wLookup);
-                                    }
-                                    int d = 0;
-                                    if(AddLetter && s.Length == 2) {
-                                        if(GetLetter(wLookup, hLookup, Letter)) {
-                                            currVert.y = 0.0005f;
-                                            numberArea = true;
-                                        }
-                                    } else {
-                                        d = int.Parse(s[s.Length-3].ToString());
-                                        if(DigitLookup[wLookup,hLookup,d] > 0) {
-                                            currVert.y = 0.0005f;
-                                            numberArea = true;
-                                        } 
-                                    }
-                                    //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
-
-
-                                }
-                                else if(i > (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3) + SPACING*3 && 
-                                    i <= (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*4 + SPACING*3) && 
-                                    (AddLetter && s.Length > 2))
-                                {
-                                    wLookup -= (LABEL_NUMBER_WIDTH*3 + (SPACING*3)+1);
-                                    if(wLookup <= (LABEL_NUMBER_WIDTH/2)) {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) + ((LABEL_NUMBER_WIDTH/2) - wLookup) - 1;
-                                        //Debug.Log(wLookup);
-                                    } else {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) - (wLookup - (LABEL_NUMBER_WIDTH/2)) - 1;
-                                        // Debug.Log(wLookup);
-                                    }
-
-                                    if(GetLetter(wLookup, hLookup, Letter)) {
-                                        currVert.y = 0.0005f;
-                                        numberArea = true;
-                                    }
-                                    //int d = int.Parse(s[s.Length-3].ToString());
-                                    //if(DigitLookup[wLookup,hLookup,d] > 0) {
-                                    //    currVert.y = 0.0005f;
-                                    //    numberArea = true;
-                                    //} 
-                                }
-                            }*/
+                        if(numMatching > 0)
+                        {
+                            c = heightSum / (float)numMatching;
                         }
+                        else
+                        {
+                            c = (heightSum / (float)((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1)));
+                        }
+
+                        if(addTileBorder && numMatching == 0 && numBorderTris > 0)
+                        {
+                            //onBorder = true;
+                            hIdx = j - castingTrisHeight;
+                            wIdx = i - castingTrisWidth;
+                            
+                            int origX = wIdx;
+                            int origY = hIdx;
+
+                            if(matchScaleSize)
+                            {
+                                origX = (int)((float)origX / scaleFactor);
+                                origY = (int)((float)origY / scaleFactor);
+
+                                if(scaleQuarter)
+                                {
+                                    origX = origX * 2;
+                                    origY = origY * 2;
+                                }
+                            }
+
+                            int iOrigX = tex.width-1-origX;
+                            if(doFleece)
+                            {
+                                iOrigX = origX;
+                            }
+                            //these two lookups need to differ...
+                            //this is looking up in the color reference texture, which we use it's color value as a lookup
+                            //into the actual brodatz texture.
+                            Color col = tex.GetPixel(iOrigX, origY);
+                            bool f = false;
+                            Color32 c2 = new Color32((byte)(col.r*255), (byte)(col.g*255), (byte)(col.b*255), 255);
+                            //Debug.Log(c2);
+                            if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
+                            {
+                                f = true;
+                            }
+
+                            if(!f)
+                            {
+                                onBorder = true;
+                            }
+                            //Debug.Log("Num matching: " + numMatching);
+                        }
+                        //c = CalcSmoothColor(wIdx, hIdx, end, heightPixels, SmoothWindow, tex, barChart);
                     }
+                    else
+                    {
+                        c = tex.GetPixel(wIdx, hIdx);
+                    }
+                    c.g = 0f;
                 }
                 else
                 {
-                    if(Smooth)
+                    //if within hemisphere area...
+                    if(AddCastingDivets)
                     {
-                        
-                        int wIdx = i;
-                        int hIdx = j;
-                        if (invert)
-                        {
-                            wIdx = end - 1 - i;
-                            if (barChart)
+                        if(addCustomDivets) {
+                            if(CalcCastingSphereCustom(i, j, castingTrisWidth, end, heightPixels, worldWidth, worldHeight, 
+                                halfWidth, halfHeight, divetOffset, divetRadius, out c.r))
                             {
-                                //want to sample from the middle of the original texture...
-
-                                wIdx += originalPixelWidth;
+                                c.g = 1f;
                             }
-                        }
-                        
-                        //c = CalcSmoothColor(wIdx, j, end, heightPixels, SmoothWindow, tex, barChart);
-                        c = Color.black;
-
-                        Color heightSum = Color.black;
-                        for(int k = j-SmoothWindow; k <= j+SmoothWindow; ++k)
-                        {
-                            for(int l = i-SmoothWindow; l <= i+SmoothWindow; ++l)
+                        } else {
+                            if(CalcCastingSphere(i, j, end, heightPixels, castingTrisWidth, sphereWidth, out c.r))
                             {
-                                hIdx = k;
-                                wIdx = l;
-
-                                if(wIdx < 0)
-                                {
-                                    wIdx = 0;
-                                }
-
-                                if(hIdx < 0)
-                                {
-                                    hIdx = 0;
-                                }
-
-                                if(wIdx > widthPixels-1 && !barChart)
-                                {
-                                    wIdx = widthPixels-1;
-                                }
-
-                                if(hIdx > heightPixels-1)
-                                {
-                                    hIdx = heightPixels-1;
-                                }
-
-                                int origX = wIdx;
-                                int origY = hIdx;
-
-                                if(matchScaleSize)
-                                {
-                                    origX = (int)((float)origX / scaleFactor);
-                                    origY = (int)((float)origY / scaleFactor);
-
-                                    if(scaleQuarter)
-                                    {
-                                        origX = origX * 2;
-                                        origY = origY * 2;
-                                    }
-
-                                    int mWidth = tex.width;
-                                    int mHeight = tex.height;
-
-                                    if(scaleQuarter)
-                                    {
-                                        mWidth = mWidth / 2;
-                                        mHeight = mHeight / 2;    
-                                    }
-
-                                    if(wIdx % mWidth > 0)
-                                    {
-                                        if(((wIdx / mWidth) % 2) == 1)
-                                        {
-                                            wIdx = mWidth - (wIdx % mWidth); 
-                                        }
-                                        else
-                                        {
-                                            wIdx = (wIdx % mWidth); 
-                                        }
-                                    }
-
-                                    if(hIdx % mHeight > 0)
-                                    {
-                                        if(((hIdx / mHeight) % 2) == 1)
-                                        {
-                                            hIdx = mHeight - (hIdx % mHeight); 
-                                        }
-                                        else
-                                        {
-                                            hIdx = hIdx % mHeight; 
-                                        }
-                                    }
-                                }
-
-                                //these two lookups need to differ...
-                                Color col = tex.GetPixel(origX, origY);
-                                bool f = false;
-                                Color32 c2 = new Color32((byte)(col.r*255), (byte)(col.g*255), (byte)(col.b*255), 255);
-                                for(int q = 0; q < lines.Length; ++q)
-                                {
-                                    //Debug.Log(c2);
-                                    //Debug.Log(colorLookup[q]);
-                                    if(c2.r == colorLookup[q].r && c2.g == colorLookup[q].g && c2.b == colorLookup[q].b)
-                                    {
-                                        if(doColorMatch)
-                                        {
-                                            if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
-                                            {
-                                                if(scaleQuarter)
-                                                {
-                                                    if(matchScaleSize)
-                                                    {
-                                                        c = tileTextures[q].GetPixel(wIdx, hIdx);
-                                                    }
-                                                    else
-                                                    {
-                                                        c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    c = tileTextures[q].GetPixel(wIdx, hIdx);
-                                                }
-                                                f = true;
-                                                break;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if(scaleQuarter)
-                                            {
-                                                c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
-                                            }
-                                            else
-                                            {
-                                                c = tileTextures[q].GetPixel(wIdx, hIdx);
-                                            }
-                                            f = true;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if(!f)
-                                {
-                                    //Debug.Log(c2);
-                                    //find minimum
-                                    int minIndex = -1;
-                                    float maxDist = 99999f;
-                                    for(int q = 0; q < lines.Length; ++q)
-                                    {
-                                        if(Vector4.Distance((Color)c2, (Color)colorLookup[q]) < maxDist)
-                                        {
-                                            maxDist = Vector4.Distance((Color)c2, (Color)colorLookup[q]);
-                                            minIndex = q;
-                                        }
-                                    }
-
-                                    if(minIndex != -1)
-                                    {
-                                        if(doColorMatch)
-                                        {
-                                            if(matchColor.r == colorLookup[minIndex].r && 
-                                                matchColor.g == colorLookup[minIndex].g && 
-                                                matchColor.b == colorLookup[minIndex].b)
-                                            {
-                                                if(scaleQuarter)
-                                                {
-                                                    if(matchScaleSize)
-                                                    {
-                                                        c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                                    }
-                                                    else
-                                                    {
-                                                        c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                                }
-                                                f = true;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if(scaleQuarter)
-                                            {
-                                                c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
-                                            }
-                                            else
-                                            {
-                                                c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if(doColorMatch && !f)
-                                {
-                                    c = Color.black;
-                                }
-
-                                heightSum += c;
-                            
+                                c.g = 1f;
                             }
-                        }
-
-                        c = (heightSum / (float)((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1)));
-
-                    }
-                    else
-                    {
-                        
-                        int wIdx = i;
-                        if (invert)
-                        {
-                            wIdx = end - 1 - i;
-                            if (barChart)
-                            {
-                                //want to sample from the middle of the original texture...
-
-                                wIdx += originalPixelWidth;
-                            }
-                        }
-
-                        int hIdx = j;
-
-                        /*if(scaleQuarter)
-                        {
-                            hIdx *= 2;
-                            wIdx *= 2;
-                        }*/
-
-                        c = tex.GetPixel(wIdx, hIdx);
-                        //Debug.Log(c);
-                        bool f = false;
-                        Color32 c2 = new Color32((byte)(c.r*255), (byte)(c.g*255), (byte)(c.b*255), 255);
-                        for(int q = 0; q < lines.Length; ++q)
-                        {
-                            //Debug.Log(c2);
-                            //Debug.Log(colorLookup[q]);
-                            if(c2.r == colorLookup[q].r && c2.g == colorLookup[q].g && c2.b == colorLookup[q].b)
-                            {
-                                if(doColorMatch)
-                                {
-                                    if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
-                                    {
-                                        if(scaleQuarter)
-                                        {
-                                            c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
-                                        }
-                                        else
-                                        {
-                                            c = tileTextures[q].GetPixel(wIdx, hIdx);
-                                        }
-                                        f = true;
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    if(scaleQuarter)
-                                    {
-                                        c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
-                                    }
-                                    else
-                                    {
-                                        c = tileTextures[q].GetPixel(wIdx, hIdx);
-                                    }
-                                    f = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if(!f)
-                        {
-                            //Debug.Log(c2);
-                            //find minimum
-                            int minIndex = -1;
-                            float maxDist = 99999f;
-                            for(int q = 0; q < lines.Length; ++q)
-                            {
-                                if(Vector4.Distance((Color)c2, (Color)colorLookup[q]) < maxDist)
-                                {
-                                    maxDist = Vector4.Distance((Color)c2, (Color)colorLookup[q]);
-                                    minIndex = q;
-                                }
-                            }
-
-                            if(minIndex != -1)
-                            {
-                                if(doColorMatch)
-                                {
-                                    if(matchColor.r == colorLookup[minIndex].r && 
-                                        matchColor.g == colorLookup[minIndex].g && 
-                                        matchColor.b == colorLookup[minIndex].b)
-                                    {
-                                        if(scaleQuarter)
-                                        {
-                                            c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
-                                        }
-                                        else
-                                        {
-                                            c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                        }
-                                        f = true;
-                                    }
-                                }
-                                else
-                                {
-                                    if(scaleQuarter)
-                                    {
-                                        c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
-                                    }
-                                    else
-                                    {
-                                        c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                    }
-                                }
-                            }
-                        }
-
-                        if(doColorMatch && !f)
-                        {
-                            c = Color.black;
                         }
                     }
                 }
@@ -2017,104 +1543,86 @@ public class MultiTactileTile : MonoBehaviour
                     v = c.r;
                 }
 
-                if(castingOption)
+                if(c.g == 1f)
                 {
-                    if(c.g == 1f)
+                    if(castingInvert)
                     {
-                        if(castingInvert)
-                        {
-                            currVert.y = (baseSize) + tileSize * (v);
-                        }
-                        else
-                        {
-                            if(doSilicone) {    //don't add the casting divets for silicone (omit the 1-v multiplier as it is below)
-                                currVert.y = castingBase + (baseSize) + tileSize;
-                            } else {
-                                currVert.y = castingBase + (baseSize) + tileSize * (1f-v);
-                            }
-                        }
+                        currVert.y = (baseSize) + tileSize * (v);
                     }
                     else
                     {
-                        if(bothIn)
-                        {
-                            /*if(makeControl) {
-                                currVert.y = castingBase;
-                            }
-                            else
-                            {*/
-                                if(onBorder) {
-                                    currVert.y = castingBase;// + (baseSize);
-                                } 
-                                else
-                                {
-                                    if(castingInvert)
-                                    {
-                                        currVert.y = (baseSize);
-                                    }
-                                    else
-                                    {
-                                        //currVert.y = baseSize + tileSize * (1f-v);
-                                        if(v == 0f)
-                                        {
-                                            currVert.y = (castingBase + baseSize + tileSize);// - (baseSize + tileSize * (v));
-                                        }
-                                        else
-                                        {
-                                            currVert.y = (castingBase + baseSize + tileSize) - (baseSize + tileSize * (v));
-                                            if(makeControl) {
-                                                currVert.y = castingBase;// + tileSize;
-                                            }
-                                        }
-                                    }
-                                }
-                            //}
+                        if(doSilicone) {    //don't add the casting divets for silicone (omit the 1-v multiplier as it is below)
+                            currVert.y = castingBase + (baseSize) + tileSize;
+                        } else {
+                            currVert.y = castingBase + (baseSize) + tileSize * (1f-v);
+                        }
+                    }
+                }
+                else
+                {
+                    if(bothIn)
+                    {
+                        /*if(makeControl) {
+                            currVert.y = castingBase;
                         }
                         else
-                        {
-                            if(castingInvert)
-                            {
-                                currVert.y = (baseSize);
-                            }
+                        {*/
+                            if(onBorder) {
+                                currVert.y = castingBase;// + (baseSize);
+                            } 
                             else
                             {
-                                //Debug.Log("hitting: " + v);
-                                //add extra border here...
-                                if(onBorder) {
-                                    currVert.y = castingBase;// + (baseSize);
-                                } else {
+                                if(castingInvert)
+                                {
+                                    currVert.y = (baseSize);
+                                }
+                                else
+                                {
+                                    //currVert.y = baseSize + tileSize * (1f-v);
                                     if(v == 0f)
                                     {
                                         currVert.y = (castingBase + baseSize + tileSize);// - (baseSize + tileSize * (v));
                                     }
                                     else
                                     {
-                                        currVert.y = castingBase + (baseSize) + tileSize * v;
-                                    }
-                                }
-
-                                if(numberArea) {
-                                    currVert.y = castingBase + (baseSize) - 0.0005f;
-                                }
-
-                                if(makeControl) {
-                                    if(numberArea) {
-                                        currVert.y = castingBase + (baseSize) + tileSize - 0.0005f;
-                                    } else {
-                                        if(!onBorder) {
-                                            currVert.y = castingBase + (baseSize) + tileSize;// + tileSize;
+                                        currVert.y = (castingBase + baseSize + tileSize) - (baseSize + tileSize * (v));
+                                        if(makeControl) {
+                                            currVert.y = (castingBase + baseSize + tileSize) - (baseSize + tileSize * 0.5f);
                                         }
                                     }
                                 }
                             }
-                        }
+                        //}
                     }
-                }
-                else
-                {
-                    currVert.y = (baseSize) + tileSize * v;  //sample y value from the texutre...
-                    if(makeControl) {
-                        currVert.y = (baseSize) + tileSize;
+                    else
+                    {
+                        if(castingInvert)
+                        {
+                            currVert.y = (baseSize);
+                        }
+                        else
+                        {
+                            //Debug.Log("hitting: " + v);
+                            //add extra border here...
+                            if(onBorder) {
+                                currVert.y = castingBase;// + (baseSize);
+                            } else {
+                                if(v == 0f)
+                                {
+                                    currVert.y = (castingBase + baseSize + tileSize);// - (baseSize + tileSize * (v));
+                                }
+                                else
+                                {
+                                    currVert.y = castingBase + (baseSize) + tileSize * v;
+                                }
+                            }
+
+                            if(makeControl) {
+                                if(!onBorder) {
+                                    currVert.y = castingBase + (baseSize) + tileSize;// + tileSize;
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -2196,20 +1704,6 @@ public class MultiTactileTile : MonoBehaviour
             indexIdx += 6;
         }
 
-        //vertIndex=0;
-
-        /*for(int j = 0; j < tex.height; j++)
-        {
-            for(int i = 0; i < tex.width; i++)
-            {
-                if(j < tex.height-1 && i < tex.width-1)
-                {
-                    normals[vertIndex] = Vector3.Cross(Vector3.Normalize(verts[vertIndex+1] - verts[vertIndex]), Vector3.Normalize(verts[vertIndex+tex.width] - verts[vertIndex+1]));
-                }
-                vertIndex++;
-            }
-        }*/
-
         MeshFilter m = GetComponent<MeshFilter>();
         Mesh newMesh = new Mesh();
         m.mesh = newMesh;
@@ -2231,7 +1725,7 @@ public class MultiTactileTile : MonoBehaviour
         float tileSize, bool invert, Color32 matchColor, bool scaleQuarter=false, bool castingOption=false, 
         float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
         bool makeControl=false, bool doSilicone=false, float castingBase=0.002f, bool addTileBorder=false, int borderTris=0, bool addCustomDivets=false, float divetOffset=0f,
-        float divetRadius = 0f, bool barChart=false, bool castingHole = false, bool doColorMatch=false, bool matchScaleSize=false, float scaleFactor=2.5f, int originalIndex=-1) 
+        float divetRadius = 0f, bool barChart=false, bool castingHole = false, bool doColorMatch=false, bool matchScaleSize=false, float scaleFactor=2.5f, int originalIndex=-1, int MirrorFudge=0) 
     {
         InitializeLookup();
 
@@ -2257,7 +1751,7 @@ public class MultiTactileTile : MonoBehaviour
         Texture2D[] tileTextures = new Texture2D[lines.Length];
         Color32[] colorLookup = new Color32[lines.Length];
         
-       string[] letterString = new string[lines.Length];
+        string[] letterString = new string[lines.Length];
         string[] numString = new string[lines.Length];
 
         for(int i = 0; i < lines.Length; ++i)
@@ -2274,15 +1768,6 @@ public class MultiTactileTile : MonoBehaviour
             //Debug.Log(numString);
             
             tileTextures[i] = (Texture2D)Resources.Load("brodatz/D"+numString[i]);
-            /*if(tileTextures[i] != null)
-            {
-                Debug.Log(tileTextures[i].name);
-                Debug.Log(colorLookup[i]);
-            }
-            else
-            {
-                Debug.Log("null");
-            }*/
         }
 
         if(numString[originalIndex]=="0")
@@ -2323,42 +1808,6 @@ public class MultiTactileTile : MonoBehaviour
         int castingTrisWidth = 0;
         int castingTrisHeight = 0;
         float sphereWidth = 0;
-
-        if(castingOption)
-        {
-            //base number of additional triangles on texture size...
-            if(barChart) 
-            {
-                widthIncrement = (worldWidth / ((float)(widthPixels-1f))) * 3f;
-                widthPixels /= 3;
-            }
-
-            castingTrisWidth = (int)((float)(castingBorderSize / worldWidth) * (float)widthPixels);
-            castingTrisHeight = (int)((float)(castingBorderSize / worldHeight) * (float)heightPixels);
-            
-            Debug.Log(castingTrisWidth);
-            sphereWidth = (castingTrisWidth / 4.5f);    //3.8f
-            //Debug.Log(castingTrisWidth);
-
-            heightPixels += (2 * castingTrisWidth);
-            widthPixels += (2 * castingTrisWidth);
-            
-            worldWidth += (2 * castingBorderSize);
-            worldHeight += (2 * castingBorderSize);
-            
-        }
-        else
-        {
-            if(barChart) 
-            {
-                widthIncrement = (worldWidth / ((float)(widthPixels-1f))) * 3f;// * 0.3333333f;
-                widthPixels /= 3;
-                
-                //for bar chart casting we want to sample the middle 1/3 of the texture, but also add border triangles...
-
-                //widthPixels = widthPixels+1;
-            }
-        }
         
         int BASE_VERT_OFFSET = widthPixels * heightPixels;// * 2;
         //int BASE_INDEX_OFFSET = tex.width * 12 + tex.height * 12;
@@ -2392,10 +1841,7 @@ public class MultiTactileTile : MonoBehaviour
         //Debug.Log(s);
 
         int HALF_LABEL_BOUNDS_WIDTH = (LABEL_NUMBER_WIDTH * 2 + 6);
-        if(barChart) { 
-            HALF_LABEL_BOUNDS_WIDTH = LABEL_NUMBER_WIDTH * 2 - 3;
-        }
-        
+
         if(AddLetter && s.Length > 2) {
             HALF_LABEL_BOUNDS_WIDTH = LABEL_NUMBER_WIDTH * 2 + (LABEL_NUMBER_WIDTH/3);
         } else if(AddLetter && s.Length == 1) {
@@ -2422,20 +1868,9 @@ public class MultiTactileTile : MonoBehaviour
         {
             int start = 0;
             int end = widthPixels;
-            if (barChart)
-            {
-                if (!castingOption)
-                {
-                    start = widthPixels;
-                    end = start + widthPixels;
-                }
-                    //start = widthPixels - castingTrisWidth;
-                    //end = start + castingTrisWidth * 2 + widthPixels
-            }
 
             for(int i = start; i < end; i++)
             {
-
                 Color c = Color.white;
                 if(castingOption)
                 {
@@ -2478,91 +1913,6 @@ public class MultiTactileTile : MonoBehaviour
                         currVert.y = 0f;// 0.0005f; //old underline
                     }
                 }
-                /*else if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
-                         i >= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH && i < ((start+end) / 2) + HALF_LABEL_BOUNDS_WIDTH)
-                {
-                    int hLookup = j - START_LABEL_HEIGHT;
-                    int wLookup = (i - (((start+end)/2)-HALF_LABEL_BOUNDS_WIDTH));
-
-                    if(i >= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH && 
-                        i < ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + LABEL_NUMBER_WIDTH && 
-                        s.Length > 0)
-                    {
-                        //1st digit...
-                        int d = 0;//int.Parse(s[0].ToString());
-                        if(AddLetter) {
-                            if(GetLetter(wLookup, hLookup, Letter)) {
-                                currVert.y = 0.0005f;
-                            }
-                            else {
-                                currVert.y = 0f;
-                            }
-                        }
-                        else {
-                            if(MultiTactileTile.DigitLookup[wLookup,hLookup,d] > 0) {
-                                currVert.y = 0.0005f;
-                                //Debug.Log("Yes");
-                            } else {
-                                currVert.y = 0f;
-                            }
-                        }
-                    }
-                    else if(i > ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH + SPACING) && 
-                        i <= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && 
-                        ((s.Length > 1) || (AddLetter && s.Length > 0)))
-                    {
-                        wLookup -= (LABEL_NUMBER_WIDTH + SPACING+1);
-                        int d = 0;
-                        if(AddLetter) {
-                            //d = int.Parse(s[0].ToString());
-                        } else {
-                            //d = int.Parse(s[1].ToString());
-                        }
-                        //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
-
-                        if(DigitLookup[wLookup,hLookup,d] > 0) {
-                            currVert.y = 0.0005f;
-                        } else {
-                            currVert.y = 0f;
-                        }
-                    }
-                    else if(i > ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2) + SPACING*2 && 
-                        i <= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && 
-                        ((s.Length > 2) || (AddLetter && s.Length > 1)) )
-                    {
-                        wLookup -= (LABEL_NUMBER_WIDTH*2 + (SPACING*2)+1);
-                        int d = 0;
-                        if(AddLetter) {
-                            //d = int.Parse(s[1].ToString());
-                        } else {
-                            //d = int.Parse(s[2].ToString());
-                        }
-                        //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
-
-                        if(DigitLookup[wLookup,hLookup,d] > 0) {
-                            currVert.y = 0.0005f;
-                        } else {
-                            currVert.y = 0f;
-                        }
-                    }
-                    else if(i > ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3) + SPACING*3 && 
-                        i <= ((start+end) / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*4 + SPACING*3) && 
-                        (AddLetter && s.Length > 2))
-                    {
-                        wLookup -= (LABEL_NUMBER_WIDTH*3 + (SPACING*3)+1);
-                        int d = int.Parse(s[2].ToString());
-                        if(DigitLookup[wLookup,hLookup,d] > 0) {
-                            currVert.y = 0.0005f;
-                        } else {
-                            currVert.y = 0f;
-                        }
-                    }
-                    else
-                    {
-                        currVert.y = 0f;
-                    }
-
-                }*/
                 else
                 {
 				    currVert.y = 0f;
@@ -2600,237 +1950,58 @@ public class MultiTactileTile : MonoBehaviour
 			}	
 		}
 
+        Color32[] texColors = tex.GetPixels32(0);
+
         for(int j = 0; j < heightPixels; j++)
         {
             int start = 0;
             int end = widthPixels;
-            if(barChart) {
-                if(!castingOption)
-                {
-                    start = widthPixels;
-                    end = start+widthPixels;
-                }
-            }
 
             for(int i = start; i < end; i++)
             {
                 Color c = Color.black;
-                bool bothIn = true;
-                bool numberArea = false;
                 bool onBorder = false;
 
-                if(castingOption)
+                if(Smooth)
                 {
-                    int wIdx = end-1-i;
-                    //int wIdx = i;
+                    int wIdx = i;
                     int hIdx = j;
-
-                    if(i > castingTrisWidth && i < end - castingTrisWidth)
+                    if (invert)
                     {
-                        wIdx = wIdx - castingTrisWidth;
-                        if(barChart)
+                        wIdx = end - 1 - i;
+                        if (barChart)
                         {
                             //want to sample from the middle of the original texture...
 
                             wIdx += originalPixelWidth;
                         }
                     }
-                    else
-                    {
-                        bothIn = false;
-                        if(addTileBorder) {
-                            if(((i >= castingTrisWidth - borderTris) && (i <= castingTrisWidth) || 
-                            (i >= end - castingTrisWidth) && (i <= (end - castingTrisWidth + borderTris))) && 
-                            ((j <= heightPixels - castingTrisHeight + borderTris) && j >= castingTrisHeight - borderTris)) {
-                                onBorder = true;
-                            }
-                        }
-                    }
+                    
+                    int numMatching = 0;
+                    
+                    int oX = wIdx;
+                    int oY = hIdx;
 
-                    if(j > castingTrisHeight && j < heightPixels - castingTrisHeight)
+                    if(matchScaleSize)
                     {
-                        hIdx = hIdx - castingTrisHeight;
-                    }
-                    else
-                    {
-                        bothIn = false;
-                        if(addTileBorder) {
-                            if(((j >= castingTrisHeight - borderTris) && (j <= castingTrisHeight) ||
-                             (j >= heightPixels - castingTrisHeight) && (j <= (heightPixels - castingTrisHeight + borderTris))) &&
-                             ((i <= end - castingTrisWidth + borderTris) && i >= castingTrisWidth - borderTris)) {
-                                onBorder = true;
-                            }
-                        }
-                    }
+                        oX = (int)((float)oX / scaleFactor);
+                        oY = (int)((float)oY / scaleFactor);
 
-                    if(bothIn)
-                    {
-                        if(Smooth)
+                        if(scaleQuarter)
                         {
-                            c = CalcSmoothColor(wIdx, hIdx, end, heightPixels, SmoothWindow, tex, barChart);
-                        }
-                        else
-                        {
-                            c = tex.GetPixel(wIdx, hIdx);
-                        }
-                        c.g = 0f;
-                    }
-                    else
-                    {
-                        //if within hemisphere area...
-                        if(AddCastingDivets)
-                        {
-                            if(addCustomDivets) {
-                                if(CalcCastingSphereCustom(i, j, castingTrisWidth, end, heightPixels, worldWidth, worldHeight, 
-                                    halfWidth, halfHeight, divetOffset, divetRadius, out c.r))
-                                {
-                                    c.g = 1f;
-                                }
-                            } else {
-                                if(CalcCastingSphere(i, j, end, heightPixels, castingTrisWidth, sphereWidth, out c.r))
-                                {
-                                    c.g = 1f;
-                                }
-                            }
-                        }
-
-                        if(!castingInvert) {
-                            /*if(j >= START_LABEL_HEIGHT && j < (START_LABEL_HEIGHT + LABEL_NUMBER_HEIGHT) &&
-                                i >= (end / 2) - HALF_LABEL_BOUNDS_WIDTH && i < (end / 2) + HALF_LABEL_BOUNDS_WIDTH)
-                            {
-                                int hLookup = j - START_LABEL_HEIGHT;
-                                int wLookup = (i - ((end/2)-HALF_LABEL_BOUNDS_WIDTH));
-
-                                if(i >= (end / 2) - HALF_LABEL_BOUNDS_WIDTH && 
-                                    i < (end / 2) - HALF_LABEL_BOUNDS_WIDTH + LABEL_NUMBER_WIDTH && 
-                                    s.Length > 0)
-                                {
-                                    if(wLookup <= (LABEL_NUMBER_WIDTH/2)) {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) + ((LABEL_NUMBER_WIDTH/2) - wLookup) - 1;
-                                        //Debug.Log(wLookup);
-                                    } else {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) - (wLookup - (LABEL_NUMBER_WIDTH/2)) - 1;
-                                        // Debug.Log(wLookup);
-                                    }
-
-                                    //1st digit...
-
-                                    int d = int.Parse(s[s.Length-1].ToString());
-
-                                    if(MultiTactileTile.DigitLookup[wLookup,hLookup,d] > 0) {
-                                        currVert.y = 0.0005f;
-                                        numberArea = true;
-                                    } 
-                                    
-                                }
-                                else if(i > (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH + SPACING) && 
-                                    i <= (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2 + SPACING) && 
-                                    ((s.Length > 1) || (AddLetter && s.Length > 0)))
-                                {
-                                    wLookup -= (LABEL_NUMBER_WIDTH + SPACING+1);
-                                    
-                                    if(wLookup <= (LABEL_NUMBER_WIDTH/2)) {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) + ((LABEL_NUMBER_WIDTH/2) - wLookup) - 1;
-                                        //Debug.Log(wLookup);
-                                    } else {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) - (wLookup - (LABEL_NUMBER_WIDTH/2)) - 1;
-                                        // Debug.Log(wLookup);
-                                    }
-                                    int d = 0;
-                                    if(AddLetter && s.Length == 1) {
-                                        if(GetLetter(wLookup, hLookup, Letter)) {
-                                            currVert.y = 0.0005f;
-                                            numberArea = true;
-                                        }
-                                    } else {
-                                        d = int.Parse(s[s.Length-2].ToString());
-                                        if(DigitLookup[wLookup,hLookup,d] > 0) {
-                                            currVert.y = 0.0005f;
-                                            numberArea = true;
-                                        } 
-                                    }
-                                    //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
-
-
-                                }
-                                else if(i > (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*2) + SPACING*2 && 
-                                    i <= (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3 + SPACING*2) && 
-                                    ((s.Length > 2) || (AddLetter && s.Length > 1)) )
-                                {
-                                    wLookup -= (LABEL_NUMBER_WIDTH*2 + (SPACING*2)+1);
-                                    
-                                    if(wLookup <= (LABEL_NUMBER_WIDTH/2)) {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) + ((LABEL_NUMBER_WIDTH/2) - wLookup) - 1;
-                                        //Debug.Log(wLookup);
-                                    } else {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) - (wLookup - (LABEL_NUMBER_WIDTH/2)) - 1;
-                                        // Debug.Log(wLookup);
-                                    }
-                                    int d = 0;
-                                    if(AddLetter && s.Length == 2) {
-                                        if(GetLetter(wLookup, hLookup, Letter)) {
-                                            currVert.y = 0.0005f;
-                                            numberArea = true;
-                                        }
-                                    } else {
-                                        d = int.Parse(s[s.Length-3].ToString());
-                                        if(DigitLookup[wLookup,hLookup,d] > 0) {
-                                            currVert.y = 0.0005f;
-                                            numberArea = true;
-                                        } 
-                                    }
-                                    //Debug.Log(wLookup + ", " + hLookup + ", " + d);// + " : " + TactileTile.DigitLookup[wLookup,hLookup,d]);
-
-
-                                }
-                                else if(i > (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*3) + SPACING*3 && 
-                                    i <= (end / 2) - HALF_LABEL_BOUNDS_WIDTH + (LABEL_NUMBER_WIDTH*4 + SPACING*3) && 
-                                    (AddLetter && s.Length > 2))
-                                {
-                                    wLookup -= (LABEL_NUMBER_WIDTH*3 + (SPACING*3)+1);
-                                    if(wLookup <= (LABEL_NUMBER_WIDTH/2)) {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) + ((LABEL_NUMBER_WIDTH/2) - wLookup) - 1;
-                                        //Debug.Log(wLookup);
-                                    } else {
-                                        wLookup = (LABEL_NUMBER_WIDTH/2) - (wLookup - (LABEL_NUMBER_WIDTH/2)) - 1;
-                                        // Debug.Log(wLookup);
-                                    }
-
-                                    if(GetLetter(wLookup, hLookup, Letter)) {
-                                        currVert.y = 0.0005f;
-                                        numberArea = true;
-                                    }
-                                    //int d = int.Parse(s[s.Length-3].ToString());
-                                    //if(DigitLookup[wLookup,hLookup,d] > 0) {
-                                    //    currVert.y = 0.0005f;
-                                    //    numberArea = true;
-                                    //} 
-                                }
-                            }*/
+                            oX = oX * 2;
+                            oY = oY * 2;
                         }
                     }
-                }
-                else
-                {
-                    if(Smooth)
+                    
+                    Color heightSum = Color.black;
+                    //when smoothing, we first need to check if the current pixel we are on matches...
+                    Color colM = tex.GetPixel(oX, oY);//texColors[origX + tex.width + origY];//
+                    
+                    Color32 colMatch = new Color32((byte)(colM.r*255f), (byte)(colM.g*255f), (byte)(colM.b*255f), 255);
+                    
+                    if(colMatch.r == matchColor.r && colMatch.g == matchColor.g && colMatch.b == matchColor.b)
                     {
-                        int wIdx = i;
-                        int hIdx = j;
-                        if (invert)
-                        {
-                            wIdx = end - 1 - i;
-                            if (barChart)
-                            {
-                                //want to sample from the middle of the original texture...
-
-                                wIdx += originalPixelWidth;
-                            }
-                        }
-                        
-                        //c = CalcSmoothColor(wIdx, j, end, heightPixels, SmoothWindow, tex, barChart);
-                        c = Color.black;
-
-                        Color heightSum = Color.black;
                         for(int k = j-SmoothWindow; k <= j+SmoothWindow; ++k)
                         {
                             for(int l = i-SmoothWindow; l <= i+SmoothWindow; ++l)
@@ -2881,19 +2052,19 @@ public class MultiTactileTile : MonoBehaviour
                                         mHeight = mHeight / 2;    
                                     }
 
-                                    if(wIdx % mWidth > 0)
+                                    if(wIdx / mWidth > 0)
                                     {
                                         if(((wIdx / mWidth) % 2) == 1)
                                         {
-                                            wIdx = mWidth - (wIdx % mWidth); 
+                                            wIdx = mWidth - (wIdx % mWidth) + MirrorFudge; 
                                         }
                                         else
                                         {
-                                            wIdx = (wIdx % mWidth); 
+                                            wIdx = (wIdx % mWidth) + MirrorFudge;  
                                         }
                                     }
 
-                                    if(hIdx % mHeight > 0)
+                                    if(hIdx / mHeight > 0)
                                     {
                                         if(((hIdx / mHeight) % 2) == 1)
                                         {
@@ -2907,12 +2078,13 @@ public class MultiTactileTile : MonoBehaviour
                                 }
 
                                 //these two lookups need to differ...
-                                Color col = tex.GetPixel(origX, origY);
+                                Color col = tex.GetPixel(origX, origY);//texColors[origX + tex.width + origY];//
                                 bool f = false;
-                                Color32 c2 = new Color32((byte)(col.r*255), (byte)(col.g*255), (byte)(col.b*255), 255);
+                                Color32 c2 = new Color32((byte)(col.r*255f), (byte)(col.g*255f), (byte)(col.b*255f), 255);
+                                //Debug.Log(c2);
+                                
                                 for(int q = 0; q < lines.Length; ++q)
                                 {
-                                    //Debug.Log(c2);
                                     //Debug.Log(colorLookup[q]);
                                     if(c2.r == colorLookup[q].r && c2.g == colorLookup[q].g && c2.b == colorLookup[q].b)
                                     {
@@ -2920,6 +2092,7 @@ public class MultiTactileTile : MonoBehaviour
                                         {
                                             if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
                                             {
+                                                numMatching++;
                                                 if(scaleQuarter)
                                                 {
                                                     if(matchScaleSize)
@@ -2962,68 +2135,6 @@ public class MultiTactileTile : MonoBehaviour
                                     }
                                 }
 
-                                if(!f)
-                                {
-                                    //Debug.Log(c2);
-                                    //find minimum
-                                    int minIndex = -1;
-                                    float maxDist = 99999f;
-                                    for(int q = 0; q < lines.Length; ++q)
-                                    {
-                                        if(Vector4.Distance((Color)c2, (Color)colorLookup[q]) < maxDist)
-                                        {
-                                            maxDist = Vector4.Distance((Color)c2, (Color)colorLookup[q]);
-                                            minIndex = q;
-                                        }
-                                    }
-
-                                    if(minIndex != -1)
-                                    {
-                                        if(doColorMatch)
-                                        {
-                                            if(matchColor.r == colorLookup[minIndex].r && 
-                                                matchColor.g == colorLookup[minIndex].g && 
-                                                matchColor.b == colorLookup[minIndex].b)
-                                            {
-                                                if(scaleQuarter)
-                                                {
-                                                    if(matchScaleSize)
-                                                    {
-                                                        c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                                    }
-                                                    else
-                                                    {
-                                                        c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                                }
-                                                f = true;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if(scaleQuarter)
-                                            {
-                                                    if(matchScaleSize)
-                                                    {
-                                                        c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                                    }
-                                                    else
-                                                    {
-                                                        c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
-                                                    }
-                                            }
-                                            else
-                                            {
-                                                c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                            }
-                                        }
-                                    }
-                                }
-
                                 if(doColorMatch && !f)
                                 {
                                     c = Color.black;
@@ -3035,7 +2146,8 @@ public class MultiTactileTile : MonoBehaviour
                                         if(makeControl)
                                         {
                                             c = Color.black;
-                                            c.r = 1f;
+                                            //c.r = 0.005f;
+                                            c.r = 0.5f;
                                         }
                                     }
                                 }
@@ -3044,137 +2156,17 @@ public class MultiTactileTile : MonoBehaviour
                             
                             }
                         }
+                    }
 
-                        c = (heightSum / (float)((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1)));
-
+                    //Debug.Log("Num matching: " + numMatching);
+                    //c = (heightSum / (float)((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1)));
+                    if(numMatching > 0)
+                    {
+                        c = heightSum / (float)numMatching;
                     }
                     else
                     {
-                        int wIdx = i;
-                        if (invert)
-                        {
-                            wIdx = end - 1 - i;
-                            if (barChart)
-                            {
-                                //want to sample from the middle of the original texture...
-
-                                wIdx += originalPixelWidth;
-                            }
-                        }
-
-                        int hIdx = j;
-
-                        /*if(scaleQuarter)
-                        {
-                            hIdx *= 2;
-                            wIdx *= 2;
-                        }*/
-
-                        c = tex.GetPixel(wIdx, hIdx);
-                        //Debug.Log(c);
-                        bool f = false;
-                        Color32 c2 = new Color32((byte)(c.r*255), (byte)(c.g*255), (byte)(c.b*255), 255);
-                        for(int q = 0; q < lines.Length; ++q)
-                        {
-                            //Debug.Log(c2);
-                            //Debug.Log(colorLookup[q]);
-                            if(c2.r == colorLookup[q].r && c2.g == colorLookup[q].g && c2.b == colorLookup[q].b)
-                            {
-                                if(doColorMatch)
-                                {
-                                    if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
-                                    {
-                                        if(scaleQuarter)
-                                        {
-                                            c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
-                                        }
-                                        else
-                                        {
-                                            c = tileTextures[q].GetPixel(wIdx, hIdx);
-                                        }
-                                        f = true;
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    if(scaleQuarter)
-                                    {
-                                        c = tileTextures[q].GetPixel(wIdx/2, hIdx/2);
-                                    }
-                                    else
-                                    {
-                                        c = tileTextures[q].GetPixel(wIdx, hIdx);
-                                    }
-                                    f = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if(!f)
-                        {
-                            //Debug.Log(c2);
-                            //find minimum
-                            int minIndex = -1;
-                            float maxDist = 99999f;
-                            for(int q = 0; q < lines.Length; ++q)
-                            {
-                                if(Vector4.Distance((Color)c2, (Color)colorLookup[q]) < maxDist)
-                                {
-                                    maxDist = Vector4.Distance((Color)c2, (Color)colorLookup[q]);
-                                    minIndex = q;
-                                }
-                            }
-
-                            if(minIndex != -1)
-                            {
-                                if(doColorMatch)
-                                {
-                                    if(matchColor.r == colorLookup[minIndex].r && 
-                                        matchColor.g == colorLookup[minIndex].g && 
-                                        matchColor.b == colorLookup[minIndex].b)
-                                    {
-                                        if(scaleQuarter)
-                                        {
-                                            c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
-                                        }
-                                        else
-                                        {
-                                            c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                        }
-                                        f = true;
-                                    }
-                                }
-                                else
-                                {
-                                    if(scaleQuarter)
-                                    {
-                                        c = tileTextures[minIndex].GetPixel(wIdx/2, hIdx/2);
-                                    }
-                                    else
-                                    {
-                                        c = tileTextures[minIndex].GetPixel(wIdx, hIdx);
-                                    }
-                                }
-                            }
-                        }
-
-                        if(doColorMatch && !f)
-                        {
-                            c = Color.black;
-                        }
-                        else
-                        {
-                            if(f && doColorMatch)
-                            {
-                                if(makeControl)
-                                {
-                                    c = Color.black;
-                                    c.r = 1f;
-                                }
-                            }
-                        }
+                        c = (heightSum / (float)((SmoothWindow * 2 + 1) * (SmoothWindow * 2 + 1)));
                     }
                 }
 
@@ -3188,91 +2180,10 @@ public class MultiTactileTile : MonoBehaviour
                     v = c.r;
                 }
 
-                if(castingOption)
-                {
-                    if(c.g == 1f)
-                    {
-                        if(castingInvert)
-                        {
-                            currVert.y = (baseSize) + tileSize * (v);
-                        }
-                        else
-                        {
-                            if(doSilicone) {    //don't add the casting divets for silicone (omit the 1-v multiplier as it is below)
-                                currVert.y = castingBase + (baseSize) + tileSize;
-                            } else {
-                                currVert.y = castingBase + (baseSize) + tileSize * (1f-v);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if(bothIn)
-                        {
-                            if(castingInvert)
-                            {
-                                currVert.y = (baseSize);
-                            }
-                            else
-                            {
-                                //currVert.y = baseSize + tileSize * (1f-v);
-                                currVert.y = (castingBase + baseSize + tileSize) - (baseSize + tileSize * (v));
-
-                                if(makeControl) {
-                                    currVert.y = castingBase;// + tileSize;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if(castingInvert)
-                            {
-                                currVert.y = (baseSize);
-                            }
-                            else
-                            {
-                                //Debug.Log("hitting: " + v);
-                                //add extra border here...
-                                if(onBorder) {
-                                    currVert.y = castingBase;// + (baseSize);
-                                } else {
-                                    currVert.y = castingBase + (baseSize) + tileSize * v;
-                                }
-
-                                if(numberArea) {
-                                    currVert.y = castingBase + (baseSize) - 0.0005f;
-                                }
-
-                                if(makeControl) {
-                                    if(numberArea) {
-                                        currVert.y = castingBase + (baseSize) + tileSize - 0.0005f;
-                                    } else {
-                                        if(!onBorder) {
-                                            currVert.y = castingBase + (baseSize) + tileSize;// + tileSize;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    currVert.y = (baseSize) + tileSize * v;  //sample y value from the texutre...
-                    //if(makeControl) {
-                    //    currVert.y = (baseSize) + tileSize;
-                    //}
-                }
-
-                //currVert.x = -halfWidth + (((float)(i - start) / ((float)(end-start)-1f)) * worldWidth);
+                currVert.y = (baseSize) + tileSize * v;  //sample y value from the texutre...
 
                 currVert.x = -halfWidth + (((float)i - start) * widthIncrement);// * worldWidth);
                 currVert.z = -halfHeight + (((float)j / ((float)heightPixels-1f)) * worldHeight);
-                //currVert.z = -halfHeight + ((float)j * heightIncrement);
-                /*if (vertIndex == verts.Length)
-                {
-                    Debug.Log(verts.Length);
-                }*/
 
                 verts[vertIndex] = currVert;
                 //normals[vertIndex] = Vector3.up;
@@ -3341,20 +2252,6 @@ public class MultiTactileTile : MonoBehaviour
             indices[indexIdx+5] = BASE_VERT_OFFSET + widthPixels * j + (widthPixels-1);
             indexIdx += 6;
         }
-
-        //vertIndex=0;
-
-        /*for(int j = 0; j < tex.height; j++)
-        {
-            for(int i = 0; i < tex.width; i++)
-            {
-                if(j < tex.height-1 && i < tex.width-1)
-                {
-                    normals[vertIndex] = Vector3.Cross(Vector3.Normalize(verts[vertIndex+1] - verts[vertIndex]), Vector3.Normalize(verts[vertIndex+tex.width] - verts[vertIndex+1]));
-                }
-                vertIndex++;
-            }
-        }*/
 
         MeshFilter m = GetComponent<MeshFilter>();
         Mesh newMesh = new Mesh();
