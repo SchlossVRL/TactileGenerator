@@ -118,6 +118,15 @@ public class MultiTactileGenerator : MonoBehaviour
     [SerializeField]
     float ScaleFactor = 2.5f;
 
+    [SerializeField]
+    int MirrorFudge = 0;
+    
+    [SerializeField]
+    int MirrorFudgeY = 0;
+    
+    [SerializeField]
+    GameObject CutObject;
+
     void Start()
     {
         
@@ -162,9 +171,17 @@ public class MultiTactileGenerator : MonoBehaviour
                 colorLookup[i] = new Color32((byte)int.Parse(vals[0]), (byte)int.Parse(vals[1]), (byte)int.Parse(vals[2]), 255);
 
                 GameObject ip = Instantiate(TilePrefab);
+                ip.name = vals[3];
 
                 MultiTactileTile ipc = ip.GetComponent<MultiTactileTile>();
                 
+                ipc.CutObject = CutObject;
+                ipc.TilePrefab = TilePrefab;
+                ipc.colorMatchIndex = i;
+                ipc.matchTexture = TestTexture;
+                ipc.colorMatches = MultiTest;
+                ipc.scaleFactor = 0.3125f;
+
                 if(CastingOption) {
                     AddCastingDivets = true;
                 }
@@ -172,7 +189,12 @@ public class MultiTactileGenerator : MonoBehaviour
                 ipc.GenerateMultiTile(TestTexture, MultiTest, WorldWidth, WorldLength, BaseSize, TileSize, Invert, colorLookup[i], ScaleQuarter, 
                     CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                     AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
-                    DivetOffset, DivetRadius, BarChart, CastingHole, true, MatchScaleSize, ScaleFactor, i);
+                    DivetOffset, DivetRadius, BarChart, CastingHole, true, MatchScaleSize, ScaleFactor, i, MirrorFudge, MirrorFudgeY);
+
+                if(ipc.GetComponent<MeshFilter>().sharedMesh != null)
+                {
+                    ipc.CutBase();
+                }
             }
         }
     }
@@ -196,7 +218,7 @@ public class MultiTactileGenerator : MonoBehaviour
                 colorLookup[i] = new Color32((byte)int.Parse(vals[0]), (byte)int.Parse(vals[1]), (byte)int.Parse(vals[2]), 255);
 
                 GameObject ip = Instantiate(TilePrefab);
-
+                ip.name = vals[3];
                 MultiTactileTile ipc = ip.GetComponent<MultiTactileTile>();
                 
                 if(CastingOption) {
@@ -206,7 +228,7 @@ public class MultiTactileGenerator : MonoBehaviour
                 ipc.GenerateMultiTileCasted(TestTexture, MultiTest, WorldWidth, WorldLength, BaseSize, TileSize, Invert, colorLookup[i], ScaleQuarter, 
                     CastingOption, CastingBorderSize, CastingInvert, Smooth, SmoothWindow, AddCastingDivets, 
                     AddLetter, Letter, MakeControl, DoSilicone, CastingBase, AddBorder, NumBorderTriangles, AddCustomDivets, 
-                    DivetOffset, DivetRadius, BarChart, CastingHole, true, MatchScaleSize, ScaleFactor, i);
+                    DivetOffset, DivetRadius, BarChart, CastingHole, true, MatchScaleSize, ScaleFactor, i, MirrorFudge, MirrorFudgeY);
             }
         }
     }

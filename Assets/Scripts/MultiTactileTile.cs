@@ -19,25 +19,25 @@ public class MultiTactileTile : MonoBehaviour
     static int[,] GLookup = new int[LABEL_NUMBER_WIDTH, LABEL_NUMBER_HEIGHT];
 
     [SerializeField]
-    GameObject CutObject;
+    public GameObject CutObject;
 
     [SerializeField]
-    GameObject TilePrefab;
+    public GameObject TilePrefab;
 
     [SerializeField]
-    Texture2D matchTexture;
+    public Texture2D matchTexture;
 
     [SerializeField]
-    int colorMatchIndex;
+    public int colorMatchIndex;
 
     [SerializeField]
-    TextAsset colorMatches;
+    public TextAsset colorMatches;
 
     [SerializeField]
     bool matchScaleSize = true;
 
     [SerializeField]
-    float scaleFactor = 2.5f;
+    public float scaleFactor = 2.5f;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -300,7 +300,7 @@ public class MultiTactileTile : MonoBehaviour
     }
 
     [ContextMenu("CutBase")]
-    void CutBase()
+    public void CutBase()
     {
         int newVertCount = 0;
         int newTriCount = 0;
@@ -776,6 +776,7 @@ public class MultiTactileTile : MonoBehaviour
         if(TilePrefab != null)
         {
             GameObject newTile = Instantiate(TilePrefab);
+            newTile.name = gameObject.name;
             MeshFilter m = newTile.GetComponent<MeshFilter>();
             Mesh newMesh = new Mesh();
             m.sharedMesh = newMesh;
@@ -799,7 +800,7 @@ public class MultiTactileTile : MonoBehaviour
         float tileSize, bool invert, Color32 matchColor, bool scaleQuarter=false, bool castingOption=false, 
         float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
         bool makeControl=false, bool doSilicone=false, float castingBase=0.002f, bool addTileBorder=false, int borderTris=0, bool addCustomDivets=false, float divetOffset=0f,
-        float divetRadius = 0f, bool barChart=false, bool castingHole = false, bool doColorMatch=false, bool matchScaleSize=false, float scaleFactor=2.5f, int originalIndex=-1) 
+        float divetRadius = 0f, bool barChart=false, bool castingHole = false, bool doColorMatch=false, bool matchScaleSize=false, float scaleFactor=2.5f, int originalIndex=-1, int MirrorFudge=0, int MirrorFudgeY=0) 
     {
         InitializeLookup();
 
@@ -846,21 +847,22 @@ public class MultiTactileTile : MonoBehaviour
 
         bool doFleece = false;
 
-        if(numString[originalIndex]=="0")
+        /*if(numString[originalIndex]=="0")
         {
             makeControl = true;
             Debug.Log("MAKING CONTROL");
-        }
+        }*/
 
         if(letterString[originalIndex] == "M")
         {
             //fleece
-            doFleece = true;
+            //doFleece = true;
             //doSilicone = true;
             castingBase = 0.00275f;
             castingBorderSize = 0f;//0.0127f;
             castingOption = true;
             //AddCastingDivets = true;
+            castingBorderSize = 0.0127f;
             addTileBorder = true;
             borderTris = 8;
             Debug.Log("FOUND FLEECE");
@@ -883,7 +885,7 @@ public class MultiTactileTile : MonoBehaviour
             doSilicone = true;
             castingBase = 0.00325f;
             baseSize = 0.0025f;
-            castingBorderSize = 0f;//0.0127f;
+            castingBorderSize = 0.0127f;
             castingOption = true;
             Debug.Log("FOUND SILICONE");
             //return;
@@ -1217,7 +1219,7 @@ public class MultiTactileTile : MonoBehaviour
                                         //should be wIdx - borderWidth in indices...
                                         //we do this above...
                                         
-                                        if((wIdx / mWidth) > 0)
+                                        /*if((wIdx / mWidth) > 0)
                                         {
                                             if(((wIdx / mWidth) % 2) == 1)
                                             {
@@ -1239,7 +1241,7 @@ public class MultiTactileTile : MonoBehaviour
                                             {
                                                 hIdx = hIdx % mHeight; 
                                             }
-                                        }
+                                        }*/
                                     }
 
                                     //these two lookups need to differ...
@@ -1254,6 +1256,12 @@ public class MultiTactileTile : MonoBehaviour
                                        iOrigX = origX;
                                        iWIdx = wIdx;
                                     }
+
+                                    /*if(iWIdx < 0)
+                                    {
+                                        Debug.Log("WHA");
+                                        return;
+                                    }*/
 
                                     Color col = tex.GetPixel(iOrigX, origY);
                                     bool f = false;
@@ -1274,16 +1282,41 @@ public class MultiTactileTile : MonoBehaviour
                                                     {
                                                         if(matchScaleSize)
                                                         {
-                                                            c = tileTextures[q].GetPixel(wIdx, hIdx);
+                                                            if(iWIdx / tileTextures[q].width > 0)
+                                                            {
+                                                                if(((iWIdx / tileTextures[q].width) % 2) == 1)
+                                                                {
+                                                                    iWIdx = tileTextures[q].width - (iWIdx % tileTextures[q].width); 
+                                                                }
+                                                                else
+                                                                {
+                                                                    iWIdx = (iWIdx % tileTextures[q].width);  
+                                                                }
+                                                            }
+
+                                                            if(hIdx / tileTextures[q].height > 0)
+                                                            {
+                                                                if(((hIdx / tileTextures[q].height) % 2) == 1)
+                                                                {
+                                                                    hIdx = tileTextures[q].height - (hIdx % tileTextures[q].height); 
+                                                                    //Debug.Log("POO");
+                                                                }
+                                                                else
+                                                                {
+                                                                    hIdx = hIdx % tileTextures[q].height; 
+                                                                }
+                                                            }
+
+                                                            c = tileTextures[q].GetPixel(iWIdx+MirrorFudge, hIdx+MirrorFudgeY);
                                                         }
                                                         else
                                                         {
-                                                            c = tileTextures[q].GetPixel((wIdx)/2, hIdx/2);
+                                                            c = tileTextures[q].GetPixel((iWIdx)/2, hIdx/2);
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        c = tileTextures[q].GetPixel((wIdx), hIdx);
+                                                        c = tileTextures[q].GetPixel((iWIdx), hIdx);
                                                     }
                                                     f = true;
                                                     break;
@@ -1293,11 +1326,11 @@ public class MultiTactileTile : MonoBehaviour
                                             {
                                                 if(scaleQuarter)
                                                 {
-                                                    c = tileTextures[q].GetPixel((wIdx)/2, hIdx/2);
+                                                    c = tileTextures[q].GetPixel((iWIdx)/2, hIdx/2);
                                                 }
                                                 else
                                                 {
-                                                    c = tileTextures[q].GetPixel((wIdx), hIdx);
+                                                    c = tileTextures[q].GetPixel((iWIdx), hIdx);
                                                 }
                                                 f = true;
                                                 break;
@@ -1725,7 +1758,7 @@ public class MultiTactileTile : MonoBehaviour
         float tileSize, bool invert, Color32 matchColor, bool scaleQuarter=false, bool castingOption=false, 
         float castingBorderSize=0f, bool castingInvert=false, bool Smooth=false, int SmoothWindow=0, bool AddCastingDivets=false, bool AddLetter=false, char Letter='b',
         bool makeControl=false, bool doSilicone=false, float castingBase=0.002f, bool addTileBorder=false, int borderTris=0, bool addCustomDivets=false, float divetOffset=0f,
-        float divetRadius = 0f, bool barChart=false, bool castingHole = false, bool doColorMatch=false, bool matchScaleSize=false, float scaleFactor=2.5f, int originalIndex=-1, int MirrorFudge=0) 
+        float divetRadius = 0f, bool barChart=false, bool castingHole = false, bool doColorMatch=false, bool matchScaleSize=false, float scaleFactor=2.5f, int originalIndex=-1, int MirrorFudge=0, int MirrorFudgeY=0) 
     {
         InitializeLookup();
 
@@ -1770,11 +1803,11 @@ public class MultiTactileTile : MonoBehaviour
             tileTextures[i] = (Texture2D)Resources.Load("brodatz/D"+numString[i]);
         }
 
-        if(numString[originalIndex]=="0")
+        /*if(numString[originalIndex]=="0")
         {
             makeControl = true;
             Debug.Log("MAKING CONTROL");
-        }
+        }*/
 
         if(letterString[originalIndex] == "M")
         {
@@ -2051,30 +2084,6 @@ public class MultiTactileTile : MonoBehaviour
                                         mWidth = mWidth / 2;
                                         mHeight = mHeight / 2;    
                                     }
-
-                                    if(wIdx / mWidth > 0)
-                                    {
-                                        if(((wIdx / mWidth) % 2) == 1)
-                                        {
-                                            wIdx = mWidth - (wIdx % mWidth) + MirrorFudge; 
-                                        }
-                                        else
-                                        {
-                                            wIdx = (wIdx % mWidth) + MirrorFudge;  
-                                        }
-                                    }
-
-                                    if(hIdx / mHeight > 0)
-                                    {
-                                        if(((hIdx / mHeight) % 2) == 1)
-                                        {
-                                            hIdx = mHeight - (hIdx % mHeight); 
-                                        }
-                                        else
-                                        {
-                                            hIdx = hIdx % mHeight; 
-                                        }
-                                    }
                                 }
 
                                 //these two lookups need to differ...
@@ -2097,7 +2106,32 @@ public class MultiTactileTile : MonoBehaviour
                                                 {
                                                     if(matchScaleSize)
                                                     {
-                                                        c = tileTextures[q].GetPixel(wIdx, hIdx);
+                                                        if(wIdx / tileTextures[q].width > 0)
+                                                        {
+                                                            if(((wIdx / tileTextures[q].width) % 2) == 1)
+                                                            {
+                                                                wIdx = tileTextures[q].width - (wIdx % tileTextures[q].width); 
+                                                            }
+                                                            else
+                                                            {
+                                                                wIdx = (wIdx % tileTextures[q].width);  
+                                                            }
+                                                        }
+
+                                                        if(hIdx / tileTextures[q].height > 0)
+                                                        {
+                                                            if(((hIdx / tileTextures[q].height) % 2) == 1)
+                                                            {
+                                                                hIdx = tileTextures[q].height - (hIdx % tileTextures[q].height); 
+                                                                //Debug.Log("POO");
+                                                            }
+                                                            else
+                                                            {
+                                                                hIdx = hIdx % tileTextures[q].height; 
+                                                            }
+                                                        }
+
+                                                        c = tileTextures[q].GetPixel(wIdx+MirrorFudge, hIdx+MirrorFudgeY);
                                                     }
                                                     else
                                                     {
