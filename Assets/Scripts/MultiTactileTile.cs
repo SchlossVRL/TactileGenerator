@@ -1496,46 +1496,7 @@ public class MultiTactileTile : MonoBehaviour
 
                         if(addTileBorder && numMatching == 0 && numBorderTris > 0)
                         {
-                            //onBorder = true;
-                            hIdx = j - castingTrisHeight;
-                            wIdx = i - castingTrisWidth;
-                            
-                            int origX = wIdx;
-                            int origY = hIdx;
-
-                            if(matchScaleSize)
-                            {
-                                origX = (int)((float)origX / scaleFactor);
-                                origY = (int)((float)origY / scaleFactor);
-
-                                if(scaleQuarter)
-                                {
-                                    origX = origX * 2;
-                                    origY = origY * 2;
-                                }
-                            }
-
-                            int iOrigX = tex.width-1-origX;
-                            if(doFleece)
-                            {
-                                iOrigX = origX;
-                            }
-                            //these two lookups need to differ...
-                            //this is looking up in the color reference texture, which we use it's color value as a lookup
-                            //into the actual brodatz texture.
-                            Color col = tex.GetPixel(iOrigX, origY);
-                            bool f = false;
-                            Color32 c2 = new Color32((byte)(col.r*255), (byte)(col.g*255), (byte)(col.b*255), 255);
-                            //Debug.Log(c2);
-                            if(c2.r == matchColor.r && c2.g == matchColor.g && c2.b == matchColor.b)
-                            {
-                                f = true;
-                            }
-
-                            if(!f)
-                            {
-                                onBorder = true;
-                            }
+                            onBorder = true;
                             //Debug.Log("Num matching: " + numMatching);
                         }
                         //c = CalcSmoothColor(wIdx, hIdx, end, heightPixels, SmoothWindow, tex, barChart);
@@ -1813,6 +1774,7 @@ public class MultiTactileTile : MonoBehaviour
         {
             //fleece
             //Debug.Log("FOUND FLEECE");
+            baseSize = 0.0005f;
         }
         else if(letterString[originalIndex] == "P")
         {
